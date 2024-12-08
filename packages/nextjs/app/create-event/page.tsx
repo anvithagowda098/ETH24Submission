@@ -17,7 +17,6 @@ const CreateEvent = () => {
   const [formData, setFormData] = useState<EventFormData>({
     name: "",
     description: "",
-    imageCID: "QmTest123", // Placeholder CID
     startTime: 0,
     endTime: 0,
     venueName: "",
@@ -26,10 +25,8 @@ const CreateEvent = () => {
     state: "",
     postalCode: "",
     country: "",
-    isOnline: false,
     ticketPrice: "",
     maxAttendees: 0,
-    isPrivate: false,
   });
 
   const { writeContractAsync, isMining } = useScaffoldWriteContract("EventTicketing");
@@ -45,7 +42,6 @@ const CreateEvent = () => {
             {
               name: formData.name,
               description: formData.description,
-              imageCID: formData.imageCID,
               startTime: BigInt(formData.startTime),
               endTime: BigInt(formData.endTime),
               venueName: formData.venueName,
@@ -54,16 +50,14 @@ const CreateEvent = () => {
               state: formData.state,
               postalCode: formData.postalCode,
               country: formData.country,
-              isOnline: formData.isOnline,
               ticketPrice: parseEther(formData.ticketPrice || "0"),
               maxAttendees: BigInt(formData.maxAttendees),
-              isPrivate: formData.isPrivate,
             },
           ],
         });
         console.log("Transaction hash:", tx);
         notification.success("Event creation transaction sent! Hash: " + tx);
-        //router.push("/events");
+        router.push("/events");
       } catch (error) {
         console.error("Failed to create event:", error);
         notification.error("Failed to create event: " + (error as Error).message);

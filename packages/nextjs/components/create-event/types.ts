@@ -8,7 +8,6 @@ export interface StepProps {
 export interface EventFormData {
   name: string;
   description: string;
-  imageCID: string;
   startTime: number;
   endTime: number;
   venueName: string;
@@ -17,8 +16,6 @@ export interface EventFormData {
   state: string;
   postalCode: string;
   country: string;
-  isOnline: boolean;
   ticketPrice: string;
   maxAttendees: number;
-  isPrivate: boolean;
 }
