@@ -5,464 +5,60 @@
 import { GenericContractsDeclaration } from "~~/utils/scaffold-eth/contract";
 
 const deployedContracts = {
-  80002: {
-    CreateEvent: {
-      address: "0xC4590DeA91230dC84F968Fe9aFe864A202Fa2334",
+  31337: {
+    YourContract: {
+      address: "0x5FbDB2315678afecb367f032d93F642f64180aa3",
       abi: [
         {
-          inputs: [],
+          inputs: [
+            {
+              internalType: "address",
+              name: "_owner",
+              type: "address",
+            },
+          ],
           stateMutability: "nonpayable",
           type: "constructor",
         },
         {
-          inputs: [
-            {
-              internalType: "address",
-              name: "owner",
-              type: "address",
-            },
-          ],
-          name: "OwnableInvalidOwner",
-          type: "error",
-        },
-        {
-          inputs: [
-            {
-              internalType: "address",
-              name: "account",
-              type: "address",
-            },
-          ],
-          name: "OwnableUnauthorizedAccount",
-          type: "error",
-        },
-        {
-          anonymous: false,
-          inputs: [
-            {
-              indexed: true,
-              internalType: "uint256",
-              name: "eventId",
-              type: "uint256",
-            },
-          ],
-          name: "EventCancelled",
-          type: "event",
-        },
-        {
-          anonymous: false,
-          inputs: [
-            {
-              indexed: true,
-              internalType: "uint256",
-              name: "eventId",
-              type: "uint256",
-            },
-          ],
-          name: "EventCompleted",
-          type: "event",
-        },
-        {
-          anonymous: false,
-          inputs: [
-            {
-              indexed: true,
-              internalType: "uint256",
-              name: "eventId",
-              type: "uint256",
-            },
-            {
-              indexed: true,
-              internalType: "address",
-              name: "organizer",
-              type: "address",
-            },
-            {
-              indexed: false,
-              internalType: "string",
-              name: "name",
-              type: "string",
-            },
-            {
-              indexed: false,
-              internalType: "uint256",
-              name: "startTime",
-              type: "uint256",
-            },
-            {
-              indexed: false,
-              internalType: "uint256",
-              name: "endTime",
-              type: "uint256",
-            },
-            {
-              indexed: false,
-              internalType: "uint256",
-              name: "ticketPrice",
-              type: "uint256",
-            },
-            {
-              indexed: false,
-              internalType: "uint256",
-              name: "maxAttendees",
-              type: "uint256",
-            },
-          ],
-          name: "EventCreated",
-          type: "event",
-        },
-        {
           anonymous: false,
           inputs: [
             {
               indexed: true,
               internalType: "address",
-              name: "previousOwner",
+              name: "greetingSetter",
               type: "address",
             },
             {
-              indexed: true,
-              internalType: "address",
-              name: "newOwner",
-              type: "address",
+              indexed: false,
+              internalType: "string",
+              name: "newGreeting",
+              type: "string",
+            },
+            {
+              indexed: false,
+              internalType: "bool",
+              name: "premium",
+              type: "bool",
+            },
+            {
+              indexed: false,
+              internalType: "uint256",
+              name: "value",
+              type: "uint256",
             },
           ],
-          name: "OwnershipTransferred",
+          name: "GreetingChange",
           type: "event",
         },
         {
-          inputs: [
-            {
-              internalType: "uint256",
-              name: "eventId",
-              type: "uint256",
-            },
-          ],
-          name: "cancelEvent",
-          outputs: [],
-          stateMutability: "nonpayable",
-          type: "function",
-        },
-        {
-          inputs: [
-            {
-              internalType: "uint256",
-              name: "eventId",
-              type: "uint256",
-            },
-          ],
-          name: "completeEvent",
-          outputs: [],
-          stateMutability: "nonpayable",
-          type: "function",
-        },
-        {
-          inputs: [
-            {
-              internalType: "string",
-              name: "name",
-              type: "string",
-            },
-            {
-              internalType: "string",
-              name: "description",
-              type: "string",
-            },
-            {
-              internalType: "uint256",
-              name: "startTime",
-              type: "uint256",
-            },
-            {
-              internalType: "uint256",
-              name: "endTime",
-              type: "uint256",
-            },
-            {
-              internalType: "string",
-              name: "venueName",
-              type: "string",
-            },
-            {
-              internalType: "string",
-              name: "streetAddress",
-              type: "string",
-            },
-            {
-              internalType: "string",
-              name: "city",
-              type: "string",
-            },
-            {
-              internalType: "string",
-              name: "state",
-              type: "string",
-            },
-            {
-              internalType: "string",
-              name: "postalCode",
-              type: "string",
-            },
-            {
-              internalType: "string",
-              name: "country",
-              type: "string",
-            },
-            {
-              internalType: "uint256",
-              name: "ticketPrice",
-              type: "uint256",
-            },
-            {
-              internalType: "uint256",
-              name: "maxAttendees",
-              type: "uint256",
-            },
-          ],
-          name: "createEvent",
+          inputs: [],
+          name: "greeting",
           outputs: [
             {
-              internalType: "uint256",
+              internalType: "string",
               name: "",
-              type: "uint256",
-            },
-          ],
-          stateMutability: "nonpayable",
-          type: "function",
-        },
-        {
-          inputs: [
-            {
-              internalType: "uint256",
-              name: "",
-              type: "uint256",
-            },
-          ],
-          name: "events",
-          outputs: [
-            {
-              internalType: "uint256",
-              name: "eventId",
-              type: "uint256",
-            },
-            {
-              internalType: "address",
-              name: "organizer",
-              type: "address",
-            },
-            {
-              internalType: "string",
-              name: "name",
               type: "string",
-            },
-            {
-              internalType: "string",
-              name: "description",
-              type: "string",
-            },
-            {
-              internalType: "uint256",
-              name: "startTime",
-              type: "uint256",
-            },
-            {
-              internalType: "uint256",
-              name: "endTime",
-              type: "uint256",
-            },
-            {
-              internalType: "string",
-              name: "venueName",
-              type: "string",
-            },
-            {
-              internalType: "string",
-              name: "streetAddress",
-              type: "string",
-            },
-            {
-              internalType: "string",
-              name: "city",
-              type: "string",
-            },
-            {
-              internalType: "string",
-              name: "state",
-              type: "string",
-            },
-            {
-              internalType: "string",
-              name: "postalCode",
-              type: "string",
-            },
-            {
-              internalType: "string",
-              name: "country",
-              type: "string",
-            },
-            {
-              internalType: "uint256",
-              name: "ticketPrice",
-              type: "uint256",
-            },
-            {
-              internalType: "uint256",
-              name: "maxAttendees",
-              type: "uint256",
-            },
-            {
-              internalType: "uint256",
-              name: "ticketsSold",
-              type: "uint256",
-            },
-            {
-              internalType: "enum CreateEvent.EventStatus",
-              name: "status",
-              type: "uint8",
-            },
-          ],
-          stateMutability: "view",
-          type: "function",
-        },
-        {
-          inputs: [
-            {
-              internalType: "uint256",
-              name: "eventId",
-              type: "uint256",
-            },
-          ],
-          name: "getEventDetails",
-          outputs: [
-            {
-              components: [
-                {
-                  internalType: "uint256",
-                  name: "eventId",
-                  type: "uint256",
-                },
-                {
-                  internalType: "address",
-                  name: "organizer",
-                  type: "address",
-                },
-                {
-                  internalType: "string",
-                  name: "name",
-                  type: "string",
-                },
-                {
-                  internalType: "string",
-                  name: "description",
-                  type: "string",
-                },
-                {
-                  internalType: "uint256",
-                  name: "startTime",
-                  type: "uint256",
-                },
-                {
-                  internalType: "uint256",
-                  name: "endTime",
-                  type: "uint256",
-                },
-                {
-                  internalType: "string",
-                  name: "venueName",
-                  type: "string",
-                },
-                {
-                  internalType: "string",
-                  name: "streetAddress",
-                  type: "string",
-                },
-                {
-                  internalType: "string",
-                  name: "city",
-                  type: "string",
-                },
-                {
-                  internalType: "string",
-                  name: "state",
-                  type: "string",
-                },
-                {
-                  internalType: "string",
-                  name: "postalCode",
-                  type: "string",
-                },
-                {
-                  internalType: "string",
-                  name: "country",
-                  type: "string",
-                },
-                {
-                  internalType: "uint256",
-                  name: "ticketPrice",
-                  type: "uint256",
-                },
-                {
-                  internalType: "uint256",
-                  name: "maxAttendees",
-                  type: "uint256",
-                },
-                {
-                  internalType: "uint256",
-                  name: "ticketsSold",
-                  type: "uint256",
-                },
-                {
-                  internalType: "enum CreateEvent.EventStatus",
-                  name: "status",
-                  type: "uint8",
-                },
-              ],
-              internalType: "struct CreateEvent.EventDetails",
-              name: "",
-              type: "tuple",
-            },
-          ],
-          stateMutability: "view",
-          type: "function",
-        },
-        {
-          inputs: [
-            {
-              internalType: "address",
-              name: "organizer",
-              type: "address",
-            },
-          ],
-          name: "getOrganizerEvents",
-          outputs: [
-            {
-              internalType: "uint256[]",
-              name: "",
-              type: "uint256[]",
-            },
-          ],
-          stateMutability: "view",
-          type: "function",
-        },
-        {
-          inputs: [
-            {
-              internalType: "address",
-              name: "",
-              type: "address",
-            },
-            {
-              internalType: "uint256",
-              name: "",
-              type: "uint256",
-            },
-          ],
-          name: "organizerEvents",
-          outputs: [
-            {
-              internalType: "uint256",
-              name: "",
-              type: "uint256",
             },
           ],
           stateMutability: "view",
@@ -483,51 +79,80 @@ const deployedContracts = {
         },
         {
           inputs: [],
-          name: "renounceOwnership",
+          name: "premium",
+          outputs: [
+            {
+              internalType: "bool",
+              name: "",
+              type: "bool",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "string",
+              name: "_newGreeting",
+              type: "string",
+            },
+          ],
+          name: "setGreeting",
           outputs: [],
-          stateMutability: "nonpayable",
+          stateMutability: "payable",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "totalCounter",
+          outputs: [
+            {
+              internalType: "uint256",
+              name: "",
+              type: "uint256",
+            },
+          ],
+          stateMutability: "view",
           type: "function",
         },
         {
           inputs: [
             {
               internalType: "address",
-              name: "newOwner",
+              name: "",
               type: "address",
             },
           ],
-          name: "transferOwnership",
+          name: "userGreetingCounter",
+          outputs: [
+            {
+              internalType: "uint256",
+              name: "",
+              type: "uint256",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "withdraw",
           outputs: [],
           stateMutability: "nonpayable",
           type: "function",
         },
         {
-          inputs: [
-            {
-              internalType: "uint256",
-              name: "eventId",
-              type: "uint256",
-            },
-            {
-              internalType: "uint256",
-              name: "newTicketsSold",
-              type: "uint256",
-            },
-          ],
-          name: "updateTicketsSold",
-          outputs: [],
-          stateMutability: "nonpayable",
-          type: "function",
+          stateMutability: "payable",
+          type: "receive",
         },
       ],
-      inheritedFunctions: {
-        owner: "@openzeppelin/contracts/access/Ownable.sol",
-        renounceOwnership: "@openzeppelin/contracts/access/Ownable.sol",
-        transferOwnership: "@openzeppelin/contracts/access/Ownable.sol",
-      },
+      inheritedFunctions: {},
     },
+  },
+  80002: {
     EventTicketing: {
-      address: "0xfcdA7a9142e8A4f5C563a271a75A1E040e8AD42C",
+      address: "0xFcA607E98c6950B194037934a4D1f75e9873814d",
       abi: [
         {
           inputs: [],
@@ -1518,7 +1143,7 @@ const deployedContracts = {
       },
     },
     YourContract: {
-      address: "0xb6ABf630A83a9bef15fE198969C55C267a7F3843",
+      address: "0x4549E53F075D7B479091c455589a764f551dEb36",
       abi: [
         {
           inputs: [
