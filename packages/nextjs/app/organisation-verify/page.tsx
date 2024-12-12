@@ -157,18 +157,18 @@ const SmartContractPage = ({inputState}) => {
             const contract = new ethers.Contract(contractAddress, contractABI, provider);
 
 
-            const a = inputState.proof.proof.pi_a.map((value) => {return BigInt(value).toString(10);})
+            const a = inputState.proof.proof.pi_a.map((value) => {return BigInt(value)})
             a.pop();
             console.log(a);
             const b = inputState.proof.proof.pi_b.map((arr) => {
                 const  mapped_array = arr.map((value) => {
-                    return BigInt(value).toString(10);
+                    return BigInt(value)
                 })
-                return mapped_array;
+                return mapped_array.reverse();
             })
-            console.log(b)
+            console.log("b:" + b)
             b.pop();
-            const c = inputState.proof.proof.pi_c.map((value) => {return BigInt(value).toString(10);});
+            const c = inputState.proof.proof.pi_c.map((value) => {return BigInt(value)});
             console.log(c)
             c.pop();
             const publicSignals = inputState.proof.publicSignals.map((value) => {return BigInt(value).toString(10);});
@@ -193,7 +193,7 @@ const SmartContractPage = ({inputState}) => {
     return (
     <div className="flex items-center justify-center min-h-screen min-w-screen">
       <div className="px-5 py-12 bg-white shadow-md rounded-lg max-w-xl mx-auto space-y-6">
-        {loading  ? "Smart Contract Verification Running!" : !result ? "Verified" : "Invalid Ticket!"}
+        {loading  ? "Smart Contract Verification Running!" : result ? "Verified" : "Invalid Ticket!"}
       </div>
     </div>
     );
