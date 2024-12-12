@@ -4,9 +4,17 @@ import Link from "next/link";
 import type { NextPage } from "next";
 import { useAccount } from "wagmi";
 import { Address } from "~~/components/scaffold-eth";
+import { useRouter } from "next/navigation"; // Import the useRouter hook
 
 const Home: NextPage = () => {
   const { address: connectedAddress } = useAccount();
+  const router = useRouter(); // Initialize the router
+
+  const handleViewEvents = () => {
+    if (connectedAddress) {
+      router.push(`/create-event/viewAll?id=${connectedAddress}`); // Redirect to the dynamic route
+    }
+  };
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-base-100 via-base-200 to-base-300">
@@ -38,11 +46,19 @@ const Home: NextPage = () => {
             Join Event
           </Link>
           <Link
-            href="/events"
+            href="/verify-ticket"
             className="btn btn-secondary btn-accent btn-lg min-w-[200px] text-lg font-semibold shadow-md hover:shadow-strong hover:scale-[1.02] transition-all duration-200"
           >
-            Verify Ticket
+            Get Verified
           </Link>
+          {connectedAddress && (
+            <button
+              onClick={handleViewEvents}
+              className="btn btn-outline btn-lg min-w-[200px] text-lg font-semibold shadow-md hover:shadow-strong hover:scale-[1.02] transition-all duration-200"
+            >
+              View Created Events
+            </button>
+          )}
         </div>
 
         {connectedAddress && (

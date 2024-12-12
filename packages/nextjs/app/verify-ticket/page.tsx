@@ -103,7 +103,7 @@ const QRScanner: React.FC<QRScannerProps> = ({ setStep, setRandomNumber }) => {
   const [qrResult, setQrResult] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  const onScanSuccess = (decodedText, decodedResult) => {
+  const onScanSuccess = (decodedText:any, decodedResult:any) => {
     setRandomNumber(decodedText);
     setStep(1);
   }

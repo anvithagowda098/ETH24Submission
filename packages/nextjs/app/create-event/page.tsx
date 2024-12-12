@@ -20,6 +20,7 @@ const CreateEvent = () => {
   const [formData, setFormData] = useState<EventFormData>({
     name: "",
     description: "",
+    imageCID: "QmWaT",
     startTime: 0,
     endTime: 0,
     venueName: "",
@@ -28,14 +29,13 @@ const CreateEvent = () => {
     state: "",
     postalCode: "",
     country: "",
+    isOnline: false,
     ticketPrice: "",
     maxAttendees: 0,
+    isPrivate: false
   });
 
-  const { writeContractAsync, isMining } = useScaffoldWriteContract({
-    contractName: "CreateEvent",
-    functionName: "createEvent",
-  });
+  const { writeContractAsync, isMining } = useScaffoldWriteContract("MergedContract" as any);
 
   const handleNext = async () => {
     if (currentStep < 4) {
@@ -43,9 +43,11 @@ const CreateEvent = () => {
     } else {
       try {
         const tx = await writeContractAsync({
+          functionName: "createEvent",
           args: [
             formData.name,
             formData.description,
+            formData.imageCID,
             BigInt(formData.startTime),
             BigInt(formData.endTime),
             formData.venueName,
@@ -54,8 +56,10 @@ const CreateEvent = () => {
             formData.state,
             formData.postalCode,
             formData.country,
+            formData.isOnline,
             parseEther(formData.ticketPrice || "0"),
             BigInt(formData.maxAttendees),
+            formData.isPrivate
           ],
         });
 

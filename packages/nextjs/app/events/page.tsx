@@ -52,7 +52,7 @@ const query = gql`
   }
 `;
 
-const url = "https://api.studio.thegraph.com/query/97295/create-event-polygon-amoy/v0.0.1";
+const url = "https://api.studio.thegraph.com/query/97295/zkonnect-polygon-amoy-1/version/latest";
 
 const EventPage = () => {
   const { isConnected } = useAccount();
@@ -64,7 +64,7 @@ const EventPage = () => {
   });
 
   // Scaffold Write Contract hook
-  const { writeContractAsync, isMining } = useScaffoldWriteContract("CreateEvent");
+  const { writeContractAsync, isMining } = useScaffoldWriteContract("MergedContract" as any);
 
   const { data, isLoading, isError } = useQuery<EventsResponse>({
     queryKey: ["events"],
@@ -210,7 +210,7 @@ const EventPage = () => {
       {/* Add the button to redirect */}
       <div className="mt-8 text-center">
         <button className="btn btn-secondary" onClick={handleRedirect}>
-          Go to Events Page
+          My tickets
         </button>
       </div>
     </div>

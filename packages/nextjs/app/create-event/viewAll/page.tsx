@@ -43,7 +43,7 @@ const query = gql`
 `;
 
 // The Graph endpoint for the CreateEvent contract on Polygon Amoy
-const url = "https://api.studio.thegraph.com/query/97295/create-event-polygon-amoy/version/latest";
+const url = "https://api.studio.thegraph.com/query/97295/zkonnect-polygon-amoy-1/version/latest";
 
 const Data = () => {
   const searchParams = useSearchParams();
