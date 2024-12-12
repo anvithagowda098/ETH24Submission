@@ -2,131 +2,120 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { parseEther } from "viem";
+import { Layout } from "~/components/create-event/Layout";
+import { Attendees } from "~/components/create-event/steps/Attendees";
 import { BasicInfo } from "~/components/create-event/steps/BasicInfo";
 import { DateTime } from "~/components/create-event/steps/DateTime";
 import { Location } from "~/components/create-event/steps/Location";
 import { Tickets } from "~/components/create-event/steps/Tickets";
 import { EventFormData } from "~/components/create-event/types";
-import { useScaffoldWriteContract } from "~~/hooks/scaffold-eth";
-import { notification } from "~~/utils/scaffold-eth";
-import { useAccount } from "wagmi";
+
 const CreateEvent = () => {
-  const { address } = useAccount();
   const router = useRouter();
-  const [transactionSuccessful, setTransactionSuccessful] = useState<Boolean>(false);
-  const [currentStep, setCurrentStep] = useState(1);
+  const [activeSection, setActiveSection] = useState("basic");
   const [formData, setFormData] = useState<EventFormData>({
     name: "",
     description: "",
-    startTime: 0,
-    endTime: 0,
+    image: null,
+    startDate: "",
+    startTime: "",
+    endDate: "",
+    endTime: "",
+    timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
     venueName: "",
     streetAddress: "",
     city: "",
     state: "",
     postalCode: "",
     country: "",
-    ticketPrice: "",
-    maxAttendees: 0,
+    isOnline: false,
+    ticketTypes: [
+      {
+        id: crypto.randomUUID(),
+        name: "",
+        price: "",
+        quantity: "",
+        description: "",
+      },
+    ],
+    maxAttendees: "",
+    requiredInfo: [
+      { id: "name", label: "Full Name", type: "text", isRequired: true },
+      { id: "email", label: "Email", type: "email", isRequired: true },
+    ],
+    privacyLevel: "public",
+    secretIdRequired: false,
+    secretIdStakeAmount: "0",
   });
 
-  const { writeContractAsync, isMining } = useScaffoldWriteContract("CreateEvent" as any);
-
-  const handleNext = async () => {
-    if (currentStep < 4) {
-      setCurrentStep(currentStep + 1);
+  const handleNext = () => {
+    const sections = ["basic", "datetime", "location", "tickets", "attendees"];
+    const currentIndex = sections.indexOf(activeSection);
+    if (currentIndex < sections.length - 1) {
+      setActiveSection(sections[currentIndex + 1]);
     } else {
-      try {
-        // @ts-ignore - Contract call is valid but TypeScript is having trouble with the types
-        const tx = await writeContractAsync({
-          functionName: "createEvent",
-          args: [
-            formData.name,
-            formData.description,
-            BigInt(formData.startTime),
-            BigInt(formData.endTime),
-            formData.venueName,
-            formData.streetAddress,
-            formData.city,
-            formData.state,
-            formData.postalCode,
-            formData.country,
-            parseEther(formData.ticketPrice || "0"),
-            BigInt(formData.maxAttendees),
-          ],
-        });
-
-        console.log("Transaction hash:", tx);
-        notification.success("Event creation transaction sent! Hash: " + tx);
-        if(tx)
-          setTransactionSuccessful(true);
-        //router.push("/create-event/viewAll");
-      } catch (error) {
-        console.error("Failed to create event:", error);
-        notification.error("Failed to create event: " + (error as Error).message);
-      }
+      // Handle form submission
+      console.log("Form submitted:", formData);
+      // TODO: Implement blockchain interaction
     }
   };
 
   const handleBack = () => {
-    if (currentStep > 1) {
-      setCurrentStep(currentStep - 1);
+    const sections = ["basic", "datetime", "location", "tickets", "attendees"];
+    const currentIndex = sections.indexOf(activeSection);
+    if (currentIndex > 0) {
+      setActiveSection(sections[currentIndex - 1]);
     }
   };
 
   const renderStep = () => {
-    switch (currentStep) {
-      case 1:
-        return <BasicInfo formData={formData} setFormData={setFormData} onNext={handleNext} />;
-      case 2:
-        return <DateTime formData={formData} setFormData={setFormData} onNext={handleNext} onBack={handleBack} />;
-      case 3:
-        return <Location formData={formData} setFormData={setFormData} onNext={handleNext} onBack={handleBack} />;
-      case 4:
-        return <Tickets formData={formData} setFormData={setFormData} onNext={handleNext} onBack={handleBack} />;
-      default:
-        return null;
-    }
+    const commonProps = {
+      formData,
+      setFormData,
+      onNext: handleNext,
+      onBack: handleBack,
+    };
+
+    const StepComponent = (() => {
+      switch (activeSection) {
+        case "basic":
+          return <BasicInfo {...commonProps} />;
+        case "datetime":
+          return <DateTime {...commonProps} />;
+        case "location":
+          return <Location {...commonProps} />;
+        case "tickets":
+          return <Tickets {...commonProps} />;
+        case "attendees":
+          return <Attendees {...commonProps} />;
+        default:
+          return (
+            <div className="text-center space-y-4 animate-fade-in">
+              <p className="text-neutral opacity-85">
+                Select a section from the left menu to continue creating your event.
+              </p>
+              <button
+                onClick={() => setActiveSection("basic")}
+                className="btn btn-primary btn-sm shadow-sm hover:shadow-md transition-all duration-200"
+              >
+                Start with Basic Info
+              </button>
+            </div>
+          );
+      }
+    })();
+
+    return (
+      <div className="animate-fade-in" key={activeSection}>
+        {StepComponent}
+      </div>
+    );
   };
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="max-w-2xl mx-auto">
-        <div className="mb-8">
-          <h1 className="text-4xl font-bold mb-4">Create Event</h1>
-          <div className="flex justify-between items-center">
-            {[1, 2, 3, 4].map(step => (
-              <div
-                key={step}
-                className={`w-1/4 text-center ${currentStep === step ? "text-primary font-bold" : "text-neutral-500"}`}
-              >
-                {step === 1 && "Basic Info"}
-                {step === 2 && "Date & Time"}
-                {step === 3 && "Location"}
-                {step === 4 && "Tickets"}
-              </div>
-            ))}
-          </div>
-        </div>
-        {renderStep()}
-      </div>
-      {isMining && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center">
-          <div className="bg-base-200 p-4 rounded-lg shadow-lg">
-            <div className="loading loading-spinner loading-lg"></div>
-            <p className="mt-2">Creating event...</p>
-          </div>
-        </div>
-      )}
-        {transactionSuccessful && (
-          <button 
-            onClick = {() => router.push(`/viewAll?id=${address}`)}
-            className = "btn btn-primary shadow-sm hover:shadow-md transition-all duration-200 hover:scale-[1.02]">
-            View All
-          </button>
-        )}
-    </div>
+    <Layout activeSection={activeSection} onSectionChange={setActiveSection}>
+      {renderStep()}
+    </Layout>
   );
 };
 
