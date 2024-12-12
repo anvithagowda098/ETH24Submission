@@ -1,10 +1,14 @@
 "use client";
 
 import React, { useState } from "react";
+import { useRouter } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
 import { gql, request } from "graphql-request";
 import { sha256 } from "js-sha256";
 import { useAccount } from "wagmi";
+import { useScaffoldWriteContract } from "~~/hooks/scaffold-eth";
+
+// Import useRouter
 
 interface Event {
   id: string;
@@ -48,16 +52,19 @@ const query = gql`
   }
 `;
 
-const url = "https://api.studio.thegraph.com/query/97295/create-event-polygon-amoy/v0.0.1";
+const url = "https://api.studio.thegraph.com/query/97295/zkonnect-polygon-amoy-1/version/latest";
 
 const EventPage = () => {
-  const { address, isConnected } = useAccount();
+  const { isConnected } = useAccount();
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
   const [userDetails, setUserDetails] = useState<UserDetails>({
     aadhar: "",
     creditCard: "",
     cvv: "",
   });
+
+  // Scaffold Write Contract hook
+  const { writeContractAsync, isMining } = useScaffoldWriteContract("MergedContract" as any);
 
   const { data, isLoading, isError } = useQuery<EventsResponse>({
     queryKey: ["events"],
@@ -79,12 +86,27 @@ const EventPage = () => {
     }
 
     // Generate hashes
-    const hash1 = sha256(userDetails.aadhar + userDetails.creditCard + userDetails.cvv);
-    const hash2 = sha256(hash1 + event.eventId);
+    const hash1 = "0x" + sha256(userDetails.aadhar + userDetails.creditCard + userDetails.cvv);
+    const hash2 = "0x" + sha256(hash1 + event.eventId);
 
-    // TODO: Implement NFT minting logic here
-    console.log("Hash1:", hash1);
-    console.log("Hash2:", hash2);
+    try {
+      const tx = await writeContractAsync({
+        functionName: "purchaseTicket",
+        args: [hash1, hash2, BigInt(event.eventId)],
+        value: BigInt(event.ticketPrice),
+      });
+
+      console.log("Transaction hash:", tx);
+      alert(`Ticket purchase successful! Transaction Hash: ${tx}`);
+    } catch (error) {
+      console.error("Failed to purchase ticket:", error);
+      alert(`Failed to purchase ticket: ${(error as Error).message}`);
+    }
+  };
+  const router = useRouter();
+
+  const handleRedirect = () => {
+    router.push("/my-tickets"); // Redirect to /events route
   };
 
   if (isLoading) {
@@ -126,7 +148,8 @@ const EventPage = () => {
                   {new Date(parseInt(event.endTime) * 1000).toLocaleString()}
                 </p>
                 <p>
-                  <span className="font-semibold">Price:</span> {event.ticketPrice} MATIC
+                  <span className="font-semibold">Price:</span> {event.ticketPrice} WEI |{" "}
+                  {parseInt(event.ticketPrice) * 1e-18} ETH
                 </p>
                 <p>
                   <span className="font-semibold">Available Seats:</span> {event.maxAttendees}
@@ -162,11 +185,13 @@ const EventPage = () => {
               <div className="card-actions justify-end mt-4">
                 {selectedEvent?.id === event.id ? (
                   <button
-                    className="btn btn-primary shadow-sm hover:shadow-md transition-all duration-200"
+                    className={`btn btn-primary shadow-sm hover:shadow-md transition-all duration-200 ${
+                      isMining ? "loading" : ""
+                    }`}
                     onClick={() => handleBuyTicket(event)}
-                    disabled={!isConnected}
+                    disabled={!isConnected || isMining}
                   >
-                    Buy Ticket
+                    {isMining ? "Processing..." : "Buy Ticket"}
                   </button>
                 ) : (
                   <button
@@ -180,6 +205,13 @@ const EventPage = () => {
             </div>
           </div>
         ))}
+      </div>
+
+      {/* Add the button to redirect */}
+      <div className="mt-8 text-center">
+        <button className="btn btn-secondary" onClick={handleRedirect}>
+          My tickets
+        </button>
       </div>
     </div>
   );

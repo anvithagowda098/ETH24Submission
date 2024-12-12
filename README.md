@@ -1,80 +1,169 @@
-# 🏗 Scaffold-ETH 2
+# ZKonnect: Decentralized Event Management and Ticketing
 
-<h4 align="center">
-  <a href="https://docs.scaffoldeth.io">Documentation</a> |
-  <a href="https://scaffoldeth.io">Website</a>
-</h4>
+ZKonnect is a blockchain-based event management and ticketing platform that leverages decentralized technologies to enhance transparency, security, and fairness in ticketing systems. Designed for organizers and attendees, ZKonnect eliminates ticket fraud, prevents black-market reselling, and enables seamless event management with role-based access control.
 
-🧪 An open-source, up-to-date toolkit for building decentralized applications (dapps) on the Ethereum blockchain. It's designed to make it easier for developers to create and deploy smart contracts and build user interfaces that interact with those contracts.
+## **Features**
 
-⚙️ Built using NextJS, RainbowKit, Hardhat, Wagmi, Viem, and Typescript.
+### For Organizers:
+- **Event Creation**: Organizers can create events by specifying details like event name, image, maximum attendees, and a secret staking ID.
+- **Editable Event Details**: Organizers can modify event details as needed, stored securely on-chain or via decentralized storage.
+- **Secure Ticket Validation**: Attendees are validated on the day of the event using Zero-Knowledge Proofs (zkProofs).
 
-- ✅ **Contract Hot Reload**: Your frontend auto-adapts to your smart contract as you edit it.
-- 🪝 **[Custom hooks](https://docs.scaffoldeth.io/hooks/)**: Collection of React hooks wrapper around [wagmi](https://wagmi.sh/) to simplify interactions with smart contracts with typescript autocompletion.
-- 🧱 [**Components**](https://docs.scaffoldeth.io/components/): Collection of common web3 components to quickly build your frontend.
-- 🔥 **Burner Wallet & Local Faucet**: Quickly test your application with a burner wallet and local faucet.
-- 🔐 **Integration with Wallet Providers**: Connect to different wallet providers and interact with the Ethereum network.
+### For Buyers:
+- **Role-Based Access Control**: Buyers and organizers have separate views, authenticated using MetaMask wallet addresses.
+- **Seamless Ticket Purchase**: Buyers stake a secret ID, verify using zkProofs, and pay via cryptocurrency.
+- **NFT Ticketing**: After purchasing, buyers receive a minted NFT containing event details and a zkProof-generated hash as a secure ticket.
 
-![Debug Contracts tab](https://github.com/scaffold-eth/scaffold-eth-2/assets/55535804/b237af0c-5027-4849-a5c1-2e31495cccb1)
+### Decentralized Technologies Used:
+- **Polygon zkEVM**: For deploying scalable and cost-efficient smart contracts on the testnet.
+- **zkRollups**: For secure, fast transactions and staking secret IDs.
+- **MetaMask and Coinbase Wallet**: For user authentication via wallet addresses and managing cryptocurrency payments.
+- **Circom and Snark.js**: For zkProof generation and validation.
+- **Next.js**: For building a performant, modern frontend.
+- **Hardhat**: For developing and deploying smart contracts.
+- **Scaffold-ETH2**: For bootstrapping the frontend with Ethereum integration.
 
-## Requirements
+---
 
-Before you begin, you need to install the following tools:
+## **Setup Instructions**
 
-- [Node (>= v18.18)](https://nodejs.org/en/download/)
-- Yarn ([v1](https://classic.yarnpkg.com/en/docs/install/) or [v2+](https://yarnpkg.com/getting-started/install))
-- [Git](https://git-scm.com/downloads)
+### **Prerequisites**
+- Node.js (v16 or higher)
+- Yarn or npm
+- Hardhat (for smart contract deployment)
+- MetaMask wallet extension
+- Polygon zkEVM testnet configuration
 
-## Quickstart
-
-To get started with Scaffold-ETH 2, follow the steps below:
-
-1. Install dependencies if it was skipped in CLI:
-
-```
-cd my-dapp-example
-yarn install
-```
-
-2. Run a local network in the first terminal:
-
-```
-yarn chain
+### **1. Clone the Repository**
+```bash
+git clone https://github.com/your-username/zkonnect.git
+cd zkonnect
 ```
 
-This command starts a local Ethereum network using Hardhat. The network runs on your local machine and can be used for testing and development. You can customize the network configuration in `packages/hardhat/hardhat.config.ts`.
+### **2. Install Dependencies**
+#### For Scaffold-ETH2 Setup
+- Install required tools:
+  ```bash
+  cd my-dapp-example
+  yarn install
+  ```
 
-3. On a second terminal, deploy the test contract:
+#### For ZKonnect Setup
+```bash
+# Install backend dependencies
+cd backend
+npm install
 
+# Install frontend dependencies
+cd ../frontend
+npm install
 ```
-yarn deploy
+
+### **3. Smart Contract Deployment**
+#### Scaffold-ETH2
+1. Run a local Ethereum network in the first terminal:
+   ```bash
+   yarn chain
+   ```
+
+2. Deploy the test contract on a second terminal:
+   ```bash
+   yarn deploy
+   ```
+
+#### ZKonnect
+1. Navigate to the backend directory:
+   ```bash
+   cd backend
+   ```
+2. Configure the deployment network in `hardhat.config.js` (e.g., Polygon zkEVM testnet or local network).
+3. Compile the contracts:
+   ```bash
+   npx hardhat compile
+   ```
+4. Deploy the smart contracts:
+   ```bash
+   npx hardhat run scripts/deploy.js --network zkEVM
+   ```
+5. Copy the deployed contract address and update the frontend configuration file (`frontend/src/config.js`).
+
+### **4. Run the Backend**
+Start the backend server:
+```bash
+npm start
 ```
 
-This command deploys a test smart contract to the local network. The contract is located in `packages/hardhat/contracts` and can be modified to suit your needs. The `yarn deploy` command uses the deploy script located in `packages/hardhat/deploy` to deploy the contract to the network. You can also customize the deploy script.
-
-4. On a third terminal, start your NextJS app:
-
-```
+### **5. Run the Frontend**
+#### Scaffold-ETH2
+Start the Next.js app:
+```bash
 yarn start
 ```
+Visit the app at `http://localhost:3000`.
 
-Visit your app on: `http://localhost:3000`. You can interact with your smart contract using the `Debug Contracts` page. You can tweak the app config in `packages/nextjs/scaffold.config.ts`.
+#### ZKonnect
+1. Navigate to the frontend directory:
+   ```bash
+   cd ../frontend
+   ```
+2. Start the development server:
+   ```bash
+   npm run dev
+   ```
+3. Open the app in your browser at `http://localhost:3000`.
 
-Run smart contract test with `yarn hardhat:test`
+---
 
-- Edit your smart contracts in `packages/hardhat/contracts`
-- Edit your frontend homepage at `packages/nextjs/app/page.tsx`. For guidance on [routing](https://nextjs.org/docs/app/building-your-application/routing/defining-routes) and configuring [pages/layouts](https://nextjs.org/docs/app/building-your-application/routing/pages-and-layouts) checkout the Next.js documentation.
-- Edit your deployment scripts in `packages/hardhat/deploy`
+## **How It Works**
 
+### **Organizer Workflow**:
+1. Login with MetaMask or Coinbase Wallet.
+2. Create an event by filling in event details and uploading images.
+3. Manage and edit event details stored securely on Polygon zkEVM.
 
-## Documentation
+### **Buyer Workflow**:
+1. Login with MetaMask or Coinbase Wallet.
+2. Browse events and select an event.
+3. Enter the secret staking ID and pay using cryptocurrency.
+4. Receive an NFT ticket as proof of purchase.
 
-Visit our [docs](https://docs.scaffoldeth.io) to learn how to start building with Scaffold-ETH 2.
+### **Event Verification**:
+- On the event day, buyers provide their zkProof-generated hash, which the organizer verifies to grant entry.
 
-To know more about its features, check out our [website](https://scaffoldeth.io).
+---
 
-## Contributing to Scaffold-ETH 2
+## **Technologies Used**
 
-We welcome contributions to Scaffold-ETH 2!
+### **Blockchain**:
+- **Polygon zkEVM**: For scalable and efficient smart contract deployment.
+- **zkRollups**: To ensure fast, low-cost, and secure transactions.
 
-Please see [CONTRIBUTING.MD](https://github.com/scaffold-eth/scaffold-eth-2/blob/main/CONTRIBUTING.md) for more information and guidelines for contributing to Scaffold-ETH 2.
+### **Authentication**:
+- **MetaMask and Coinbase Wallet**: Wallet-based authentication for role-based access control and payments.
+
+### **Proof Generation**:
+- **Circom and Snark.js**: For generating and validating zkProofs to secure sensitive data.
+
+### **Frontend**:
+- **Next.js**: For a modern, responsive, and performant frontend.
+- **Scaffold-ETH2**: For integrating Ethereum and bootstrapping frontend components.
+
+### **Smart Contract Development**:
+- **Hardhat**: For developing, testing, and deploying smart contracts on Polygon zkEVM.
+
+---
+
+## **Alternate Use Cases**
+1. **Event Certification**: Use ZKonnect for certification of event participation using NFTs.
+2. **Decentralized Memberships**: Manage memberships or subscriptions for exclusive events or communities.
+3. **Fraud-Proof Ticket Resale**: Enable secure, verifiable resale of tickets using NFT ownership transfer.
+
+---
+
+## **Contributing**
+We welcome contributions to improve ZKonnect. Please open an issue or submit a pull request.
+
+---
+
+## **License**
+This project is licensed under the MIT License.
