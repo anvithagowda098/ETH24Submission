@@ -37,6 +37,14 @@ const Home: NextPage = () => {
           >
             Join Event
           </Link>
+
+          {/* Verify Ticket Button */}
+          <Link
+            href="/verify-ticket"
+            className="btn btn-blue btn-lg min-w-[200px] text-lg font-semibold shadow-md hover:shadow-strong hover:scale-[1.02] transition-all duration-200"
+          >
+            Verify Ticket
+          </Link>
         </div>
 
         {connectedAddress && (
