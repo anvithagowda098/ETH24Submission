@@ -108,7 +108,9 @@ const QRScanner: React.FC<QRScannerProps> = ({ setStep, setRandomNumber }) => {
     setStep(1);
   }
 
-  const onScanError = () => {}
+  const onScanError = (error: any) => {
+    console.log(error)
+  }
 
   useEffect(() => {
     // Check if window is defined to ensure this runs only on the client side
