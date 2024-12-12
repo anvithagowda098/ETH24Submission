@@ -2209,6 +2209,7 @@ __metadata:
     framer-motion: ^11.13.3
     graphql: ^16.9.0
     graphql-request: ^7.1.2
+    html5-qrcode: ^2.3.8
     js-sha256: ^0.11.0
     jsqr: ^1.4.0
     next: ~14.2.11
@@ -8479,6 +8480,13 @@ __metadata:
   version: 0.1.4
   resolution: "hoopy@npm:0.1.4"
   checksum: cfa60c7684c5e1ee4efe26e167bc54b73f839ffb59d1d44a5c4bf891e26b4f5bcc666555219a98fec95508fea4eda3a79540c53c05cc79afc1f66f9a238f4d9e
+  languageName: node
+  linkType: hard
+
+"html5-qrcode@npm:^2.3.8":
+  version: 2.3.8
+  resolution: "html5-qrcode@npm:2.3.8"
+  checksum: 14b2bd6925c2b31670801a5eb2fe3b258cb4d1a764a52abbdc31d89e58c9a4db1949007448a2b322559fda259a2a1beb8d4def5fd635597a83a667bfaa13be2b
   languageName: node
   linkType: hard
 
