@@ -193,7 +193,7 @@ const SmartContractPage = ({inputState}) => {
     return (
     <div className="flex items-center justify-center min-h-screen min-w-screen">
       <div className="px-5 py-12 bg-white shadow-md rounded-lg max-w-xl mx-auto space-y-6">
-        {loading  ? "Smart Contract Verification Running!" : result ? "Verified" : "Invalid Ticket!"}
+        {loading  ? "Smart Contract Verification Running!" : !result ? "Verified" : "Invalid Ticket!"}
       </div>
     </div>
     );
