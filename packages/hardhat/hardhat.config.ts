@@ -136,15 +136,6 @@ const config: HardhatUserConfig = {
       url: "https://alfajores-forno.celo-testnet.org",
       accounts: [deployerPrivateKey],
     },
-    zkEVM: {
-      url: "https://1rpc.io/polygon/zkevm",
-      accounts: [deployerPrivateKey],
-    },
-    amoy: {
-      url: "https://polygon-amoy-bor-rpc.publicnode.com",
-      accounts: [deployerPrivateKey],
-      chainId: 80002,
-    },
   },
   // configuration for harhdat-verify plugin
   etherscan: {

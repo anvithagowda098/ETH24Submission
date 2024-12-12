@@ -103,14 +103,12 @@ const QRScanner: React.FC<QRScannerProps> = ({ setStep, setRandomNumber }) => {
   const [qrResult, setQrResult] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  const onScanSuccess = (decodedText:any, decodedResult:any) => {
+  const onScanSuccess = (decodedText, decodedResult) => {
     setRandomNumber(decodedText);
     setStep(1);
   }
 
-  const onScanError = (error: any) => {
-    console.log(error)
-  }
+  const onScanError = () => {}
 
   useEffect(() => {
     // Check if window is defined to ensure this runs only on the client side
@@ -224,31 +222,13 @@ const VerificationPage: NextPage = () => {
   const [loginDetails, setLoginDetails] = useState<loginDetails | null>(null);
 
   const renderStep = () => {
-    console.log("Current Step:", step);
-    console.log("Login Details:", loginDetails);
-    console.log("Random Number:", randomNumber);
-
     switch (step) {
       case 0:
         return <QRScanner setStep={setStep} setRandomNumber={setRandomNumber} />;
       case 1:
         return <PaymentForm setLoginDetails={setLoginDetails} setStep={setStep} />;
       case 2:
-        if (!loginDetails || !randomNumber) {
-          console.error("Missing data for QR code generation");
-          return (
-            <div className="text-center">
-              <p className="text-red-500 font-bold">Error: Missing data for QR code generation.</p>
-              <button
-                className="mt-4 px-4 py-2 bg-teal-500 text-white rounded-lg hover:bg-teal-600"
-                onClick={() => setStep(1)}
-              >
-                Go Back
-              </button>
-            </div>
-          );
-        }
-        return <QrPresenter qrData={{ ...loginDetails, nonce: randomNumber }} />;
+        return <QrPresenter qrData={{ ...loginDetails, nonce: randomNumber as string }} />;
       default:
         return null;
     }
