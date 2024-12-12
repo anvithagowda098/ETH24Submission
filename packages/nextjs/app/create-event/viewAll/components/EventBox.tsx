@@ -26,7 +26,7 @@ const EventBox: React.FC<EventBoxProps> = ({ eventId, name, organizer, startTime
           View Details
         </button>
         <button
-          onClick={()=> router.push(`/organisation-verify?id={eventId}`)} 
+          onClick={()=> router.push(`/organisation-verify?id=${eventId}`)} 
           className="mt-2 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600">
           Verify tickets
         </button>
