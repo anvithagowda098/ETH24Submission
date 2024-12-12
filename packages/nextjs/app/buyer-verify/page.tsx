@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Html5QrcodeScanner } from "html5-qrcode";
 import { NextPage } from "next";
 import { QRCodeCanvas } from "qrcode.react";
@@ -106,14 +106,17 @@ interface QRScannerProps {
 const QRScanner: React.FC<QRScannerProps> = ({ setStep, setRandomNumber }) => {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  const onScanSuccess = (decodedText: string) => {
-    setRandomNumber(decodedText);
-    setStep(1);
-  };
+  const onScanSuccess = useCallback(
+    (decodedText: string) => {
+      setRandomNumber(decodedText);
+      setStep(1);
+    },
+    [setRandomNumber, setStep],
+  );
 
-  const onScanError = (errorMessage: string) => {
+  const onScanError = useCallback((errorMessage: string) => {
     setErrorMessage(errorMessage);
-  };
+  }, []);
 
   useEffect(() => {
     // Check if window is defined to ensure this runs only on the client side
@@ -139,7 +142,7 @@ const QRScanner: React.FC<QRScannerProps> = ({ setStep, setRandomNumber }) => {
         (scanner as Html5QrcodeScanner).clear();
       }
     };
-  }, [onScanSuccess, setRandomNumber, setStep]);
+  }, [onScanSuccess, onScanError]);
 
   return (
     <div className="flex items-center justify-center min-h-screen min-w-screen">

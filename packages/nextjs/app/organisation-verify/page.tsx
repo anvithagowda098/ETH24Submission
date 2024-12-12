@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { ethers } from "ethers";
 import { Html5QrcodeScanner } from "html5-qrcode";
 import { QRCodeCanvas } from "qrcode.react";
@@ -53,15 +53,18 @@ interface QrScannerProps {
 const QrScanner = ({ setInputState, setPageNo }: QrScannerProps) => {
   const [value, setValue] = useState<any>(null);
 
-  const onScanSuccess = (decodedText: string) => {
-    const jsonBody = JSON.parse(decodedText);
-    setInputState(jsonBody);
-    setPageNo(2);
-  };
+  const onScanSuccess = useCallback(
+    (decodedText: string) => {
+      const jsonBody = JSON.parse(decodedText);
+      setInputState(jsonBody);
+      setPageNo(2);
+    },
+    [setInputState, setPageNo],
+  );
 
-  const onScanError = (errorMessage: string) => {
+  const onScanError = useCallback((errorMessage: string) => {
     console.error("QR Scan Error:", errorMessage);
-  };
+  }, []);
 
   useEffect(() => {
     let scanner: string | Html5QrcodeScanner = "";
@@ -83,7 +86,7 @@ const QrScanner = ({ setInputState, setPageNo }: QrScannerProps) => {
         (scanner as Html5QrcodeScanner).clear();
       }
     };
-  }, [onScanSuccess, setInputState, setPageNo]);
+  }, [onScanSuccess, onScanError]);
 
   const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
@@ -133,76 +136,84 @@ const SmartContractPage = ({ inputState }: SmartContractPageProps) => {
 
   useEffect(() => {
     const verifyProof = async () => {
-      console.log("Proof:" + inputState.proof);
-      const provider = new ethers.JsonRpcProvider("https://polygon-amoy.infura.io/v3/df71b884e8624de48cda1e91548a5995");
-
-      // Contract address and ABI
-      const contractAddress = "0xA5f137155c638d17D4D7D1A411B3cD139fF64C8F";
-      const contractABI = [
-        {
-          inputs: [
-            {
-              internalType: "uint256[2]",
-              name: "_pA",
-              type: "uint256[2]",
-            },
-            {
-              internalType: "uint256[2][2]",
-              name: "_pB",
-              type: "uint256[2][2]",
-            },
-            {
-              internalType: "uint256[2]",
-              name: "_pC",
-              type: "uint256[2]",
-            },
-            {
-              internalType: "uint256[48]",
-              name: "_pubSignals",
-              type: "uint256[48]",
-            },
-          ],
-          name: "verifyProof",
-          outputs: [
-            {
-              internalType: "bool",
-              name: "",
-              type: "bool",
-            },
-          ],
-          stateMutability: "view",
-          type: "function",
-        },
-      ];
-
-      // Create a contract instance (connected to the provider)
-      const contract = new ethers.Contract(contractAddress, contractABI, provider);
-
-      const a = inputState.proof.proof.pi_a.map((value: string) => {
-        return BigInt(value);
-      });
-      a.pop();
-      console.log(a);
-      const b = inputState.proof.proof.pi_b.map((arr: string[]) => {
-        const mapped_array = arr.map((value: string) => {
-          return BigInt(value);
-        });
-        return mapped_array.reverse();
-      });
-      console.log("b:" + b);
-      b.pop();
-      const c = inputState.proof.proof.pi_c.map((value: string) => {
-        return BigInt(value);
-      });
-      console.log(c);
-      c.pop();
-      const publicSignals = inputState.proof.publicSignals.map((value: string) => {
-        return BigInt(value).toString(10);
-      });
-
-      console.log(a, b, c, publicSignals);
+      if (!inputState?.proof) {
+        setLoading(false);
+        setResult(false);
+        return;
+      }
 
       try {
+        console.log("Proof:" + inputState.proof);
+        const provider = new ethers.JsonRpcProvider(
+          "https://polygon-amoy.infura.io/v3/df71b884e8624de48cda1e91548a5995",
+        );
+
+        // Contract address and ABI
+        const contractAddress = "0xA5f137155c638d17D4D7D1A411B3cD139fF64C8F";
+        const contractABI = [
+          {
+            inputs: [
+              {
+                internalType: "uint256[2]",
+                name: "_pA",
+                type: "uint256[2]",
+              },
+              {
+                internalType: "uint256[2][2]",
+                name: "_pB",
+                type: "uint256[2][2]",
+              },
+              {
+                internalType: "uint256[2]",
+                name: "_pC",
+                type: "uint256[2]",
+              },
+              {
+                internalType: "uint256[48]",
+                name: "_pubSignals",
+                type: "uint256[48]",
+              },
+            ],
+            name: "verifyProof",
+            outputs: [
+              {
+                internalType: "bool",
+                name: "",
+                type: "bool",
+              },
+            ],
+            stateMutability: "view",
+            type: "function",
+          },
+        ];
+
+        // Create a contract instance (connected to the provider)
+        const contract = new ethers.Contract(contractAddress, contractABI, provider);
+
+        const a = inputState.proof.proof.pi_a.map((value: string) => {
+          return BigInt(value);
+        });
+        a.pop();
+        console.log(a);
+        const b = inputState.proof.proof.pi_b.map((arr: string[]) => {
+          const mapped_array = arr.map((value: string) => {
+            return BigInt(value);
+          });
+          return mapped_array.reverse();
+        });
+        console.log("b:" + b);
+        b.pop();
+        const c = inputState.proof.proof.pi_c.map((value: string) => {
+          return BigInt(value);
+        });
+        console.log(c);
+        c.pop();
+        const publicSignals = inputState.proof.publicSignals.map((value: string) => {
+          return BigInt(value).toString(10);
+        });
+
+        console.log(a, b, c, publicSignals);
+
         const isValid = await contract.verifyProof(a, b, c, publicSignals);
         setLoading(false);
         setResult(isValid);
@@ -215,7 +226,7 @@ const SmartContractPage = ({ inputState }: SmartContractPageProps) => {
     };
 
     verifyProof();
-  }, []);
+  }, [inputState?.proof]);
 
   return (
     <div className="flex items-center justify-center min-h-screen min-w-screen">

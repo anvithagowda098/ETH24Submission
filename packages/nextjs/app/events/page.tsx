@@ -55,7 +55,7 @@ const query = gql`
 const url = "https://api.studio.thegraph.com/query/97295/create-event-polygon-amoy/v0.0.1";
 
 const EventPage = () => {
-  const { address, isConnected } = useAccount();
+  const { isConnected } = useAccount();
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
   const [userDetails, setUserDetails] = useState<UserDetails>({
     aadhar: "",
