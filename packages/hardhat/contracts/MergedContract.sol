@@ -201,7 +201,7 @@ contract MergedContract is ERC721, Ownable, ReentrancyGuard {
      * @dev Burns a ticket and issues refund if event is cancelled
      */
     function burnTicket(uint256 tokenId) external nonReentrant {
-        require(_isApprovedOrOwner(msg.sender, tokenId), "Not token owner");
+        require(ownerOf(tokenId) == msg.sender || isApprovedForAll(ownerOf(tokenId), msg.sender), "Not token owner or approved");
         uint256 eventId = ticketToEvent[tokenId];
         Event storage eventDetails = events[eventId];
         
