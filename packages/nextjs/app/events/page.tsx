@@ -86,16 +86,14 @@ const EventPage = () => {
     }
 
     // Generate hashes
-    const hash1 = sha256(userDetails.aadhar + userDetails.creditCard + userDetails.cvv);
-    const hash2 = sha256(hash1 + event.eventId);
+    const hash1 = "0x" + sha256(userDetails.aadhar + userDetails.creditCard + userDetails.cvv);
+    const hash2 = "0x" + sha256(hash1 + event.eventId);
 
     try {
       const tx = await writeContractAsync({
-        functionName: "buyTicket",
-        args: [event.eventId, hash2],
-        overrides: {
-          value: event.ticketPrice, // Pass ticket price in WEI
-        },
+        functionName: "purchaseTicket",
+        args: [hash1, hash2, BigInt(event.eventId)],
+        value: BigInt(event.ticketPrice),
       });
 
       console.log("Transaction hash:", tx);
