@@ -5,6 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 import { gql, request } from "graphql-request";
 import { sha256 } from "js-sha256";
 import { useAccount } from "wagmi";
+import { useScaffoldWriteContract } from "~~/hooks/scaffold-eth";
 
 interface Event {
   id: string;
@@ -59,6 +60,9 @@ const EventPage = () => {
     cvv: "",
   });
 
+  // Scaffold Write Contract hook
+  const { writeContractAsync, isMining } = useScaffoldWriteContract("CreateEvent");
+
   const { data, isLoading, isError } = useQuery<EventsResponse>({
     queryKey: ["events"],
     async queryFn() {
@@ -82,9 +86,21 @@ const EventPage = () => {
     const hash1 = sha256(userDetails.aadhar + userDetails.creditCard + userDetails.cvv);
     const hash2 = sha256(hash1 + event.eventId);
 
-    // TODO: Implement NFT minting logic here
-    console.log("Hash1:", hash1);
-    console.log("Hash2:", hash2);
+    try {
+      const tx = await writeContractAsync({
+        functionName: "buyTicket",
+        args: [event.eventId, hash2],
+        overrides: {
+          value: event.ticketPrice, // Pass ticket price in WEI
+        },
+      });
+
+      console.log("Transaction hash:", tx.hash);
+      alert(`Ticket purchase successful! Transaction Hash: ${tx.hash}`);
+    } catch (error) {
+      console.error("Failed to purchase ticket:", error);
+      alert(`Failed to purchase ticket: ${(error as Error).message}`);
+    }
   };
 
   if (isLoading) {
@@ -126,7 +142,7 @@ const EventPage = () => {
                   {new Date(parseInt(event.endTime) * 1000).toLocaleString()}
                 </p>
                 <p>
-                  <span className="font-semibold">Price:</span> {event.ticketPrice} MATIC
+                  <span className="font-semibold">Price:</span> {event.ticketPrice} WEI
                 </p>
                 <p>
                   <span className="font-semibold">Available Seats:</span> {event.maxAttendees}
@@ -162,11 +178,13 @@ const EventPage = () => {
               <div className="card-actions justify-end mt-4">
                 {selectedEvent?.id === event.id ? (
                   <button
-                    className="btn btn-primary shadow-sm hover:shadow-md transition-all duration-200"
+                    className={`btn btn-primary shadow-sm hover:shadow-md transition-all duration-200 ${
+                      isMining ? "loading" : ""
+                    }`}
                     onClick={() => handleBuyTicket(event)}
-                    disabled={!isConnected}
+                    disabled={!isConnected || isMining}
                   >
-                    Buy Ticket
+                    {isMining ? "Processing..." : "Buy Ticket"}
                   </button>
                 ) : (
                   <button

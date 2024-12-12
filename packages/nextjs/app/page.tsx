@@ -32,7 +32,7 @@ const Home: NextPage = () => {
             Create Event
           </Link>
           <Link
-            href="/join-event"
+            href="/verify-ticket"
             className="btn btn-secondary btn-lg min-w-[200px] text-lg font-semibold shadow-md hover:shadow-strong hover:scale-[1.02] transition-all duration-200"
           >
             Join Event
