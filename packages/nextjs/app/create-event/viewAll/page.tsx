@@ -89,7 +89,7 @@ const Data = () => {
         {data.eventCreateds.map(event => (
           <EventBox
             key={event.id}
-            eventId = {event.eventId}
+            eventId={event.eventId}
             name={event.name}
             organizer={event.organizer}
             startTime={event.startTime}

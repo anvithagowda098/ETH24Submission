@@ -1,11 +1,11 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
-import { NextPage } from "next";
+import React, { useEffect, useRef, useState } from "react";
+import { Html5QrcodeScanner } from "html5-qrcode";
 import jsQR from "jsqr";
+import { NextPage } from "next";
+import { QRCodeCanvas } from "qrcode.react";
 import { groth16 } from "snarkjs";
-import {QRCodeCanvas} from "qrcode.react"
-import { Html5QrcodeScanner } from "html5-qrcode"
 
 // Define types for props
 interface PaymentFormProps {
@@ -15,9 +15,9 @@ interface PaymentFormProps {
 
 const PaymentForm: React.FC<PaymentFormProps> = ({ setLoginDetails, setStep }) => {
   const [formData, setFormData] = useState({
-    aadhar: '',
-    credit_card: '',
-    cvv: '',
+    aadhar: "",
+    credit_card: "",
+    cvv: "",
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -38,7 +38,9 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ setLoginDetails, setStep }) =
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Aadhar Input */}
           <div>
-            <label htmlFor="aadhar" className="block text-gray-700 text-sm font-medium mb-2">Aadhar Number</label>
+            <label htmlFor="aadhar" className="block text-gray-700 text-sm font-medium mb-2">
+              Aadhar Number
+            </label>
             <input
               type="text"
               id="aadhar"
@@ -52,7 +54,9 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ setLoginDetails, setStep }) =
 
           {/* Credit Card Number Input */}
           <div>
-            <label htmlFor="credit_card" className="block text-gray-700 text-sm font-medium mb-2">Credit Card Number</label>
+            <label htmlFor="credit_card" className="block text-gray-700 text-sm font-medium mb-2">
+              Credit Card Number
+            </label>
             <input
               type="text"
               id="credit_card"
@@ -66,7 +70,9 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ setLoginDetails, setStep }) =
 
           {/* CVV Input */}
           <div>
-            <label htmlFor="cvv" className="block text-gray-700 text-sm font-medium mb-2">CVV</label>
+            <label htmlFor="cvv" className="block text-gray-700 text-sm font-medium mb-2">
+              CVV
+            </label>
             <input
               type="text"
               id="cvv"
@@ -103,24 +109,28 @@ const QRScanner: React.FC<QRScannerProps> = ({ setStep, setRandomNumber }) => {
   const [qrResult, setQrResult] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  const onScanSuccess = (decodedText:any, decodedResult:any) => {
+  const onScanSuccess = (decodedText: any, decodedResult: any) => {
     setRandomNumber(decodedText);
     setStep(1);
-  }
+  };
 
   const onScanError = (error: any) => {
-    console.log(error)
-  }
+    console.log(error);
+  };
 
   useEffect(() => {
     // Check if window is defined to ensure this runs only on the client side
-    let scanner : string | Html5QrcodeScanner = "";
+    let scanner: string | Html5QrcodeScanner = "";
     if (typeof window !== "undefined") {
       // Create a new instance of Html5QrcodeScanner
-      scanner = new Html5QrcodeScanner('qrcode-scanner', {
-        fps: 10, // Frames per second for scanning
-        qrbox: 250, // Size of the scanning box
-      }, false);
+      scanner = new Html5QrcodeScanner(
+        "qrcode-scanner",
+        {
+          fps: 10, // Frames per second for scanning
+          qrbox: 250, // Size of the scanning box
+        },
+        false,
+      );
 
       // Start the scanner with a callback function
       scanner.render(onScanSuccess, onScanError);
@@ -136,9 +146,7 @@ const QRScanner: React.FC<QRScannerProps> = ({ setStep, setRandomNumber }) => {
     <div className="flex items-center justify-center min-h-screen min-w-screen">
       <div className="px-5 py-12 bg-white shadow-md rounded-lg max-w-sm mx-auto space-y-6">
         <h1 className="text-4xl font-bold text-center text-neutral">Scan a QR Code</h1>
-        <p className="text-neutral text-center opacity-75">
-            Scan a QR Code using a scanner
-        </p>
+        <p className="text-neutral text-center opacity-75">Scan a QR Code using a scanner</p>
         <div id="qrcode-scanner"></div>
       </div>
     </div>
@@ -171,8 +179,8 @@ const QrPresenter: React.FC<QrPresenterProps> = ({ qrData }) => {
       const data = aadhar_number + credit_card_number + cvv;
       const encoder = new TextEncoder();
       const dataBuffer = encoder.encode(data);
-  
-      const hashBuffer = await crypto.subtle.digest('SHA-256', dataBuffer);
+
+      const hashBuffer = await crypto.subtle.digest("SHA-256", dataBuffer);
       const hashArray = Array.from(new Uint8Array(hashBuffer));
       const hashHex = hashArray.map(byte => byte.toString(16).padStart(2, "0")).join("");
       setHash(hashHex);
@@ -186,7 +194,12 @@ const QrPresenter: React.FC<QrPresenterProps> = ({ qrData }) => {
         const cvv_ascii_values = stringToAsciiArray(cvv);
         const nonce_ascii_values = stringToAsciiArray(nonce);
 
-        const input = { aadhar_number: aadhar_number_ascii_values, credit_card_number: credit_card_number_ascii_values, cvv: cvv_ascii_values, nonce: nonce_ascii_values };
+        const input = {
+          aadhar_number: aadhar_number_ascii_values,
+          credit_card_number: credit_card_number_ascii_values,
+          cvv: cvv_ascii_values,
+          nonce: nonce_ascii_values,
+        };
 
         const wasmFilePath = "/wasm/sha256_final.wasm";
         const zkeyFilePath = "/zkey/sha256.zkey";
@@ -206,7 +219,11 @@ const QrPresenter: React.FC<QrPresenterProps> = ({ qrData }) => {
   return (
     <div className="flex items-center justify-center min-h-screen min-w-screen">
       <div className="px-5 py-12 bg-white shadow-md rounded-lg mx-auto space-y-6">
-        {!loading1 && !loading2 ? <QRCodeCanvas value={JSON.stringify({ hash, proof })} size={600}></QRCodeCanvas> : "Generating QR Code!"}
+        {!loading1 && !loading2 ? (
+          <QRCodeCanvas value={JSON.stringify({ hash, proof })} size={600}></QRCodeCanvas>
+        ) : (
+          "Generating QR Code!"
+        )}
       </div>
     </div>
   );

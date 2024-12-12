@@ -1,10 +1,12 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import type { NextPage } from "next";
 import { useAccount } from "wagmi";
 import { Address } from "~~/components/scaffold-eth";
-import { useRouter } from "next/navigation"; // Import the useRouter hook
+
+// Import the useRouter hook
 
 const Home: NextPage = () => {
   const { address: connectedAddress } = useAccount();

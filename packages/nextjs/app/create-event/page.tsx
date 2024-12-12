@@ -32,7 +32,7 @@ const CreateEvent = () => {
     isOnline: false,
     ticketPrice: "",
     maxAttendees: 0,
-    isPrivate: false
+    isPrivate: false,
   });
 
   const { writeContractAsync, isMining } = useScaffoldWriteContract("MergedContract" as any);
@@ -59,7 +59,7 @@ const CreateEvent = () => {
             formData.isOnline,
             parseEther(formData.ticketPrice || "0"),
             BigInt(formData.maxAttendees),
-            formData.isPrivate
+            formData.isPrivate,
           ],
         });
 
