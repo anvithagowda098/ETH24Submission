@@ -527,7 +527,7 @@ const deployedContracts = {
       },
     },
     EventTicketing: {
-      address: "0xfcdA7a9142e8A4f5C563a271a75A1E040e8AD42C",
+      address: "0x3E0A1928D04d1750A9DF41FFbA8afE79b6D78253",
       abi: [
         {
           inputs: [],
@@ -1518,7 +1518,7 @@ const deployedContracts = {
       },
     },
     IssueTicket: {
-      address: "0x56D82E74F6bF74646c9e68097906B2Daf49004Dc",
+      address: "0x5422e1e9b98B9c423c3030ED1D4994Ed9ADc290d",
       abi: [
         {
           inputs: [],
@@ -2282,7 +2282,7 @@ const deployedContracts = {
       },
     },
     YourContract: {
-      address: "0xb6ABf630A83a9bef15fE198969C55C267a7F3843",
+      address: "0xdEa863FdeabE9849B2DDfe802061284BAaf29C8E",
       abi: [
         {
           inputs: [

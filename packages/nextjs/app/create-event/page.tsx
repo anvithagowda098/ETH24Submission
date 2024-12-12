@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { parseEther } from "viem";
+import { useAccount } from "wagmi";
 import { BasicInfo } from "~/components/create-event/steps/BasicInfo";
 import { DateTime } from "~/components/create-event/steps/DateTime";
 import { Location } from "~/components/create-event/steps/Location";
@@ -12,8 +13,10 @@ import { useScaffoldWriteContract } from "~~/hooks/scaffold-eth";
 import { notification } from "~~/utils/scaffold-eth";
 
 const CreateEvent = () => {
+  const { address } = useAccount();
   const router = useRouter();
   const [currentStep, setCurrentStep] = useState(1);
+  const [transactionSuccessful, setTransactionSuccessful] = useState(false);
   const [formData, setFormData] = useState<EventFormData>({
     name: "",
     description: "",
@@ -29,16 +32,17 @@ const CreateEvent = () => {
     maxAttendees: 0,
   });
 
-  const { writeContractAsync, isMining } = useScaffoldWriteContract("CreateEvent" as any);
+  const { writeContractAsync, isMining } = useScaffoldWriteContract({
+    contractName: "CreateEvent",
+    functionName: "createEvent",
+  });
 
   const handleNext = async () => {
     if (currentStep < 4) {
       setCurrentStep(currentStep + 1);
     } else {
       try {
-        // @ts-ignore - Contract call is valid but TypeScript is having trouble with the types
         const tx = await writeContractAsync({
-          functionName: "createEvent",
           args: [
             formData.name,
             formData.description,
@@ -57,6 +61,7 @@ const CreateEvent = () => {
 
         console.log("Transaction hash:", tx);
         notification.success("Event creation transaction sent! Hash: " + tx);
+        setTransactionSuccessful(true);
         router.push("events");
       } catch (error) {
         console.error("Failed to create event:", error);
@@ -114,6 +119,14 @@ const CreateEvent = () => {
             <p className="mt-2">Creating event...</p>
           </div>
         </div>
+      )}
+      {transactionSuccessful && (
+        <button
+          onClick={() => router.push(`/viewAll?id=${address}`)}
+          className="btn btn-primary shadow-sm hover:shadow-md transition-all duration-200 hover:scale-[1.02]"
+        >
+          View All
+        </button>
       )}
     </div>
   );
