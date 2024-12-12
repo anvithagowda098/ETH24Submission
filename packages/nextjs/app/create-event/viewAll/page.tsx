@@ -4,6 +4,7 @@ import React from "react";
 import EventBox from "./components/EventBox";
 import { useQuery } from "@tanstack/react-query";
 import { gql, request } from "graphql-request";
+import { useSearchParams } from 'next/navigation'
 
 interface Event {
   id: string;
@@ -24,8 +25,13 @@ interface EventsResponse {
 }
 
 const query = gql`
-  query {
-    eventCreateds(first: 10, orderBy: blockTimestamp, orderDirection: desc, where: { organizer_not: null }) {
+  query GetEventsByOrganizer($organizer: Bytes!) {
+    eventCreateds(
+      first: 10, 
+      orderBy: blockTimestamp, 
+      orderDirection: desc, 
+      where: { organizer: $organizer }
+    ) {
       id
       eventId
       organizer
@@ -41,15 +47,18 @@ const query = gql`
   }
 `;
 
+
 // The Graph endpoint for the CreateEvent contract on Polygon Amoy
-const url = "https://api.studio.thegraph.com/query/97295/issue-ticket-polygon-amoy/v0.0.1";
+const url = "https://api.studio.thegraph.com/query/97295/create-event-polygon-amoy/version/latest";
 
 const Data = () => {
+  const searchParams = useSearchParams();
+  const organizerId = searchParams.get("id");
   const { data, isLoading, isError } = useQuery<EventsResponse>({
-    queryKey: ["events"],
+    queryKey: ["events", organizerId],
     async queryFn() {
       try {
-        const response = await request<EventsResponse>(url, query);
+        const response = await request<EventsResponse>(url, query, { organizer : organizerId });
         console.log("Fetched data:", response);
         return response;
       } catch (error) {

@@ -21,6 +21,8 @@ const etherscanApiKey = process.env.POLYGONSCAN_API_KEY || "DNXJA8RX2Q3VZ4URQIWP
 // Infura API Key for Polygon Amoy
 const infuraApiKey = process.env.INFURA_API_KEY;
 
+const polygonscanApiKey = process.env.POLYGONSCAN_API_KEY
+
 const config: HardhatUserConfig = {
   solidity: {
     compilers: [
@@ -139,6 +141,11 @@ const config: HardhatUserConfig = {
     zkEVM: {
       url: "https://1rpc.io/polygon/zkevm",
       accounts: [deployerPrivateKey]
+    },
+    amoy: {
+      url: "https://polygon-amoy-bor-rpc.publicnode.com",
+      accounts: [deployerPrivateKey],
+      chainId: 80002,
     }
   },
   // configuration for harhdat-verify plugin

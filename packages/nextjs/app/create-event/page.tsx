@@ -10,9 +10,11 @@ import { Tickets } from "~/components/create-event/steps/Tickets";
 import { EventFormData } from "~/components/create-event/types";
 import { useScaffoldWriteContract } from "~~/hooks/scaffold-eth";
 import { notification } from "~~/utils/scaffold-eth";
-
+import { useAccount } from "wagmi";
 const CreateEvent = () => {
+  const { address } = useAccount();
   const router = useRouter();
+  const [transactionSuccessful, setTransactionSuccessful] = useState<Boolean>(false);
   const [currentStep, setCurrentStep] = useState(1);
   const [formData, setFormData] = useState<EventFormData>({
     name: "",
@@ -57,7 +59,9 @@ const CreateEvent = () => {
 
         console.log("Transaction hash:", tx);
         notification.success("Event creation transaction sent! Hash: " + tx);
-        router.push("/create-event/viewAll");
+        if(tx)
+          setTransactionSuccessful(true);
+        //router.push("/create-event/viewAll");
       } catch (error) {
         console.error("Failed to create event:", error);
         notification.error("Failed to create event: " + (error as Error).message);
@@ -115,6 +119,13 @@ const CreateEvent = () => {
           </div>
         </div>
       )}
+        {transactionSuccessful && (
+          <button 
+            onClick = {() => router.push(`/viewAll?id=${address}`)}
+            className = "btn btn-primary shadow-sm hover:shadow-md transition-all duration-200 hover:scale-[1.02]">
+            View All
+          </button>
+        )}
     </div>
   );
 };

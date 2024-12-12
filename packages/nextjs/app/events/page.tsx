@@ -6,6 +6,7 @@ import { gql, request } from "graphql-request";
 import { sha256 } from "js-sha256";
 import { useAccount } from "wagmi";
 import { useScaffoldWriteContract } from "~~/hooks/scaffold-eth";
+import { useRouter } from "next/navigation"; // Import useRouter
 
 interface Event {
   id: string;
@@ -95,12 +96,17 @@ const EventPage = () => {
         },
       });
 
-      console.log("Transaction hash:", tx.hash);
-      alert(`Ticket purchase successful! Transaction Hash: ${tx.hash}`);
+      console.log("Transaction hash:", tx);
+      alert(`Ticket purchase successful! Transaction Hash: ${tx}`);
     } catch (error) {
       console.error("Failed to purchase ticket:", error);
       alert(`Failed to purchase ticket: ${(error as Error).message}`);
     }
+  };
+  const router = useRouter();
+
+  const handleRedirect = () => {
+    router.push('/my-tickets'); // Redirect to /events route
   };
 
   if (isLoading) {
@@ -123,7 +129,7 @@ const EventPage = () => {
   return (
     <div className="container mx-auto p-6 space-y-8">
       <h1 className="text-4xl font-bold mb-8 animate-fade-in">Available Events</h1>
-
+      
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {data.eventCreateds.map(event => (
           <div
@@ -142,7 +148,7 @@ const EventPage = () => {
                   {new Date(parseInt(event.endTime) * 1000).toLocaleString()}
                 </p>
                 <p>
-                  <span className="font-semibold">Price:</span> {event.ticketPrice} WEI
+                  <span className="font-semibold">Price:</span> {event.ticketPrice} WEI | {parseInt(event.ticketPrice)*1e-18} ETH
                 </p>
                 <p>
                   <span className="font-semibold">Available Seats:</span> {event.maxAttendees}
@@ -198,6 +204,16 @@ const EventPage = () => {
             </div>
           </div>
         ))}
+      </div>
+
+      {/* Add the button to redirect */}
+      <div className="mt-8 text-center">
+        <button
+          className="btn btn-secondary"
+          onClick={handleRedirect}
+        >
+          Go to Events Page
+        </button>
       </div>
     </div>
   );
