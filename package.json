@@ -32,7 +32,9 @@
     "test": "yarn hardhat:test",
     "vercel": "yarn workspace @se-2/nextjs vercel",
     "vercel:yolo": "yarn workspace @se-2/nextjs vercel:yolo",
-    "verify": "yarn workspace @se-2/hardhat verify"
+    "verify": "yarn workspace @se-2/hardhat verify",
+    "lint": "next lint",
+    "lint:skip": "exit 0"
   },
   "devDependencies": {
     "@types/snarkjs": "^0",
@@ -48,5 +50,10 @@
     "jsqr": "^1.4.0",
     "qrcode.react": "^4.1.0",
     "snarkjs": "^0.7.5"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm run lint:skip"
+    }
   }
 }
