@@ -65,25 +65,21 @@ const query = gql`
       tokenId
       eventId
       hash1
-      hash2
       blockNumber
       blockTimestamp
       transactionHash
     }
     eventCreateds {
-      id
       eventId
       name
       startTime
       endTime
-      ticketPrice
-      maxAttendees
     }
   }
 `;
 
 // The Graph endpoint
-const url = "https://api.studio.thegraph.com/query/97295/create-event-polygon-amoy/v0.0.1";
+const url = "https://api.studio.thegraph.com/query/97295/zkonnect-polygon-amoy-1/version/latest";
 
 const MyTickets = () => {
   const { address } = useAccount();

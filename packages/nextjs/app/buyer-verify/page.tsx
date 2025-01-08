@@ -1,8 +1,7 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Html5QrcodeScanner } from "html5-qrcode";
-import jsQR from "jsqr";
 import { NextPage } from "next";
 import { QRCodeCanvas } from "qrcode.react";
 import { groth16 } from "snarkjs";
@@ -105,18 +104,19 @@ interface QRScannerProps {
 }
 
 const QRScanner: React.FC<QRScannerProps> = ({ setStep, setRandomNumber }) => {
-  const [file, setFile] = useState<File | null>(null);
-  const [qrResult, setQrResult] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  const onScanSuccess = (decodedText: any, decodedResult: any) => {
-    setRandomNumber(decodedText);
-    setStep(1);
-  };
+  const onScanSuccess = useCallback(
+    (decodedText: string) => {
+      setRandomNumber(decodedText);
+      setStep(1);
+    },
+    [setRandomNumber, setStep],
+  );
 
-  const onScanError = (error: any) => {
-    console.log(error);
-  };
+  const onScanError = useCallback((errorMessage: string) => {
+    setErrorMessage(errorMessage);
+  }, []);
 
   useEffect(() => {
     // Check if window is defined to ensure this runs only on the client side
@@ -138,9 +138,11 @@ const QRScanner: React.FC<QRScannerProps> = ({ setStep, setRandomNumber }) => {
 
     // Cleanup the scanner when the component unmounts
     return () => {
-      (scanner as Html5QrcodeScanner).clear();
+      if (scanner) {
+        (scanner as Html5QrcodeScanner).clear();
+      }
     };
-  }, []);
+  }, [onScanSuccess, onScanError]);
 
   return (
     <div className="flex items-center justify-center min-h-screen min-w-screen">
@@ -148,6 +150,7 @@ const QRScanner: React.FC<QRScannerProps> = ({ setStep, setRandomNumber }) => {
         <h1 className="text-4xl font-bold text-center text-neutral">Scan a QR Code</h1>
         <p className="text-neutral text-center opacity-75">Scan a QR Code using a scanner</p>
         <div id="qrcode-scanner"></div>
+        {errorMessage && <p className="text-red-500 text-center">{errorMessage}</p>}
       </div>
     </div>
   );
@@ -175,8 +178,8 @@ const QrPresenter: React.FC<QrPresenterProps> = ({ qrData }) => {
   const [hash, setHash] = useState<string | null>(null);
 
   useEffect(() => {
-    const generateDigitalFingerprint = async (aadhar_number: string, credit_card_number: string, cvv: string) => {
-      const data = aadhar_number + credit_card_number + cvv;
+    const generateDigitalFingerprint = async () => {
+      const data = qrData.aadhar + qrData.credit_card + qrData.cvv;
       const encoder = new TextEncoder();
       const dataBuffer = encoder.encode(data);
 
@@ -187,12 +190,12 @@ const QrPresenter: React.FC<QrPresenterProps> = ({ qrData }) => {
       setLoading(false);
     };
 
-    const generateProof = async (aadhar_number: string, credit_card_number: string, cvv: string, nonce: string) => {
+    const generateProof = async () => {
       try {
-        const aadhar_number_ascii_values = stringToAsciiArray(aadhar_number);
-        const credit_card_number_ascii_values = stringToAsciiArray(credit_card_number);
-        const cvv_ascii_values = stringToAsciiArray(cvv);
-        const nonce_ascii_values = stringToAsciiArray(nonce);
+        const aadhar_number_ascii_values = stringToAsciiArray(qrData.aadhar);
+        const credit_card_number_ascii_values = stringToAsciiArray(qrData.credit_card);
+        const cvv_ascii_values = stringToAsciiArray(qrData.cvv);
+        const nonce_ascii_values = stringToAsciiArray(qrData.nonce);
 
         const input = {
           aadhar_number: aadhar_number_ascii_values,
@@ -204,17 +207,17 @@ const QrPresenter: React.FC<QrPresenterProps> = ({ qrData }) => {
         const wasmFilePath = "/wasm/sha256_final.wasm";
         const zkeyFilePath = "/zkey/sha256.zkey";
 
-        const { proof, publicSignals } = await groth16.fullProve(input, wasmFilePath, zkeyFilePath);
+        const { proof: proofResult, publicSignals } = await groth16.fullProve(input, wasmFilePath, zkeyFilePath);
         setLoading2(false);
-        setProof({ proof, publicSignals });
+        setProof({ proof: proofResult, publicSignals });
       } catch (error) {
         console.error("Error generating zk Proofs:", error);
       }
     };
 
-    generateDigitalFingerprint(qrData.aadhar, qrData.credit_card, qrData.cvv);
-    generateProof(qrData.aadhar, qrData.credit_card, qrData.cvv, qrData.nonce);
-  }, []);
+    generateDigitalFingerprint();
+    generateProof();
+  }, [qrData.aadhar, qrData.credit_card, qrData.cvv, qrData.nonce]);
 
   return (
     <div className="flex items-center justify-center min-h-screen min-w-screen">
