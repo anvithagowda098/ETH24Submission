@@ -1,5 +1,3 @@
-# ZKonnect: Decentralized Event Management and Ticketing powered by Zero Knowledge.
-
 ## Highlights
 #### Introduction
 https://github.com/user-attachments/assets/7908f966-dac3-4fc5-b396-0a82042bf5e9
