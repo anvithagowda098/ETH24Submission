@@ -1,6 +1,14 @@
 ## Highlights
-#### Introduction
-https://github.com/user-attachments/assets/7908f966-dac3-4fc5-b396-0a82042bf5e9
+<p align="center">
+<img src="https://github.com/user-attachments/assets/be6e0a31-c725-412a-8328-33784c344879">
+ <p align ="center">Introduction</p>
+</p>
+<br><br>
+<p align="center">
+<img src="https://github.com/user-attachments/assets/c2a29950-8d62-49b9-8845-0309c6917b48">
+   <p align ="center">Internal Working</p>
+</p>
+
 #### Explanation
 https://github.com/user-attachments/assets/736f3aa2-aafb-4b32-b929-c421368aece4
 
