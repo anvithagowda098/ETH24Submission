@@ -5,7 +5,15 @@
   "private": true,
   "author": "EventChain Team",
   "license": "MIT",
-  "keywords": ["web3", "events", "blockchain", "zero-knowledge", "privacy", "nft", "tickets"],
+  "keywords": [
+    "web3",
+    "events",
+    "blockchain",
+    "zero-knowledge",
+    "privacy",
+    "nft",
+    "tickets"
+  ],
   "workspaces": {
     "packages": [
       "packages/*"

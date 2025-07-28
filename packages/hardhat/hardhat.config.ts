@@ -10,16 +10,15 @@ import "@nomicfoundation/hardhat-verify";
 import "hardhat-deploy";
 import "hardhat-deploy-ethers";
 
-// If not set, it uses ours Alchemy's default API key.
-// You can get your own at https://dashboard.alchemyapi.io
-const providerApiKey = process.env.ALCHEMY_API_KEY || "oKxs-03sij-U_N0iOlrSsZFr29-IqbuF";
-// If not set, it uses the hardhat account 0 private key.
-const deployerPrivateKey =
-  process.env.DEPLOYER_PRIVATE_KEY ?? "0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80";
-// If not set, it uses ours Etherscan default API key.
-const etherscanApiKey = process.env.POLYGONSCAN_API_KEY || "DNXJA8RX2Q3VZ4URQIWP7Z68CJXQZSC6AW";
-// Infura API Key for Polygon Amoy
-const infuraApiKey = process.env.INFURA_API_KEY;
+// EventChain Configuration
+const ALCHEMY_API_KEY = process.env.ALCHEMY_API_KEY || "oKxs-03sij-U_N0iOlrSsZFr29-IqbuF";
+const DEPLOYER_PRIVATE_KEY = process.env.DEPLOYER_PRIVATE_KEY ?? "0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80";
+const POLYGONSCAN_API_KEY = process.env.POLYGONSCAN_API_KEY || "DNXJA8RX2Q3VZ4URQIWP7Z68CJXQZSC6AW";
+const ETHERSCAN_API_KEY = process.env.ETHERSCAN_API_KEY || "";
+const INFURA_API_KEY = process.env.INFURA_API_KEY || "";
+
+// Gas price for deployments
+const GAS_PRICE = process.env.GAS_PRICE ? parseInt(process.env.GAS_PRICE) : "auto";
 
 const config: HardhatUserConfig = {
   solidity: {
@@ -34,6 +33,15 @@ const config: HardhatUserConfig = {
           viaIR: true,
         },
       },
+      {
+        version: "0.8.19",
+        settings: {
+          optimizer: {
+            enabled: true,
+            runs: 200,
+          },
+        },
+      },
     ],
   },
   defaultNetwork: "localhost",
@@ -41,115 +49,128 @@ const config: HardhatUserConfig = {
     deployer: {
       default: 0,
     },
+    feeRecipient: {
+      default: 1,
+    },
   },
   networks: {
-    // View the networks that are pre-configured.
-    // If the network you are looking for is not here you can add new network settings
+    // Local development network
     hardhat: {
-      forking: {
-        url: `https://eth-mainnet.alchemyapi.io/v2/${providerApiKey}`,
-        enabled: process.env.MAINNET_FORKING_ENABLED === "true",
+      forking: process.env.MAINNET_FORKING_ENABLED === "true" 
+        ? {
+            url: `https://eth-mainnet.alchemyapi.io/v2/${ALCHEMY_API_KEY}`,
+            enabled: true,
+          }
+        : undefined,
+      allowUnlimitedContractSize: true,
+      gas: 12000000,
+      blockGasLimit: 12000000,
+      gasPrice: 20000000000,
+      initialBaseFeePerGas: 0,
+      accounts: {
+        mnemonic: "test test test test test test test test test test test test junk",
+        count: 10,
       },
     },
-    mainnet: {
-      url: `https://eth-mainnet.alchemyapi.io/v2/${providerApiKey}`,
-      accounts: [deployerPrivateKey],
+    localhost: {
+      url: "http://127.0.0.1:8545",
+      accounts: [DEPLOYER_PRIVATE_KEY],
+      gas: 12000000,
+      blockGasLimit: 12000000,
+      gasPrice: 20000000000,
     },
-    sepolia: {
-      url: `https://eth-sepolia.g.alchemy.com/v2/${providerApiKey}`,
-      accounts: [deployerPrivateKey],
-    },
-    arbitrum: {
-      url: `https://arb-mainnet.g.alchemy.com/v2/${providerApiKey}`,
-      accounts: [deployerPrivateKey],
-    },
-    arbitrumSepolia: {
-      url: `https://arb-sepolia.g.alchemy.com/v2/${providerApiKey}`,
-      accounts: [deployerPrivateKey],
-    },
-    optimism: {
-      url: `https://opt-mainnet.g.alchemy.com/v2/${providerApiKey}`,
-      accounts: [deployerPrivateKey],
-    },
-    optimismSepolia: {
-      url: `https://opt-sepolia.g.alchemy.com/v2/${providerApiKey}`,
-      accounts: [deployerPrivateKey],
-    },
-    polygon: {
-      url: `https://polygon-mainnet.g.alchemy.com/v2/${providerApiKey}`,
-      accounts: [deployerPrivateKey],
+    
+    // Testnets
+    polygonAmoy: {
+      url: `https://polygon-amoy.infura.io/v3/${INFURA_API_KEY}`,
+      accounts: [DEPLOYER_PRIVATE_KEY],
+      gasPrice: 30000000000, // 30 gwei
+      gas: 8000000,
+      timeout: 120000,
+      chainId: 80002,
     },
     polygonMumbai: {
-      url: `https://polygon-mumbai.g.alchemy.com/v2/${providerApiKey}`,
-      accounts: [deployerPrivateKey],
+      url: `https://polygon-mumbai.infura.io/v3/${INFURA_API_KEY}`,
+      accounts: [DEPLOYER_PRIVATE_KEY],
+      gasPrice: 30000000000,
+      gas: 8000000,
+      chainId: 80001,
     },
-    polygonAmoy: {
-      url: `https://polygon-amoy.infura.io/v3/${infuraApiKey}`,
-      accounts: [deployerPrivateKey],
-      chainId: 80002,
+    sepolia: {
+      url: `https://sepolia.infura.io/v3/${INFURA_API_KEY}`,
+      accounts: [DEPLOYER_PRIVATE_KEY],
+      gasPrice: 20000000000,
+      gas: 8000000,
+      chainId: 11155111,
     },
-    polygonZkEvm: {
-      url: `https://polygonzkevm-mainnet.g.alchemy.com/v2/${providerApiKey}`,
-      accounts: [deployerPrivateKey],
+    goerli: {
+      url: `https://goerli.infura.io/v3/${INFURA_API_KEY}`,
+      accounts: [DEPLOYER_PRIVATE_KEY],
+      gasPrice: 20000000000,
+      gas: 8000000,
+      chainId: 5,
     },
-    polygonZkEvmTestnet: {
-      url: `https://polygonzkevm-testnet.g.alchemy.com/v2/${providerApiKey}`,
-      accounts: [deployerPrivateKey],
+    
+    // Mainnets
+    polygon: {
+      url: `https://polygon-mainnet.infura.io/v3/${INFURA_API_KEY}`,
+      accounts: [DEPLOYER_PRIVATE_KEY],
+      gasPrice: 30000000000,
+      gas: 8000000,
+      timeout: 120000,
+      chainId: 137,
     },
-    gnosis: {
-      url: "https://rpc.gnosischain.com",
-      accounts: [deployerPrivateKey],
+    ethereum: {
+      url: `https://mainnet.infura.io/v3/${INFURA_API_KEY}`,
+      accounts: [DEPLOYER_PRIVATE_KEY],
+      gasPrice: GAS_PRICE,
+      gas: 8000000,
+      timeout: 120000,
+      chainId: 1,
     },
-    chiado: {
-      url: "https://rpc.chiadochain.net",
-      accounts: [deployerPrivateKey],
+    arbitrum: {
+      url: `https://arbitrum-mainnet.infura.io/v3/${INFURA_API_KEY}`,
+      accounts: [DEPLOYER_PRIVATE_KEY],
+      gasPrice: 100000000, // 0.1 gwei
+      gas: 8000000,
+      chainId: 42161,
     },
-    base: {
-      url: "https://mainnet.base.org",
-      accounts: [deployerPrivateKey],
+    optimism: {
+      url: `https://optimism-mainnet.infura.io/v3/${INFURA_API_KEY}`,
+      accounts: [DEPLOYER_PRIVATE_KEY],
+      gasPrice: 1000000000, // 1 gwei
+      gas: 8000000,
+      chainId: 10,
     },
-    baseSepolia: {
-      url: "https://sepolia.base.org",
-      accounts: [deployerPrivateKey],
+    
+    // Layer 2 Testnets
+    arbitrumSepolia: {
+      url: `https://arbitrum-sepolia.infura.io/v3/${INFURA_API_KEY}`,
+      accounts: [DEPLOYER_PRIVATE_KEY],
+      gasPrice: 100000000,
+      gas: 8000000,
+      chainId: 421614,
     },
-    scrollSepolia: {
-      url: "https://sepolia-rpc.scroll.io",
-      accounts: [deployerPrivateKey],
-    },
-    scroll: {
-      url: "https://rpc.scroll.io",
-      accounts: [deployerPrivateKey],
-    },
-    pgn: {
-      url: "https://rpc.publicgoods.network",
-      accounts: [deployerPrivateKey],
-    },
-    pgnTestnet: {
-      url: "https://sepolia.publicgoods.network",
-      accounts: [deployerPrivateKey],
-    },
-    celo: {
-      url: "https://forno.celo.org",
-      accounts: [deployerPrivateKey],
-    },
-    celoAlfajores: {
-      url: "https://alfajores-forno.celo-testnet.org",
-      accounts: [deployerPrivateKey],
-    },
-    zkEVM: {
-      url: "https://1rpc.io/polygon/zkevm",
-      accounts: [deployerPrivateKey],
-    },
-    amoy: {
-      url: "https://polygon-amoy-bor-rpc.publicnode.com",
-      accounts: [deployerPrivateKey],
-      chainId: 80002,
+    optimismSepolia: {
+      url: `https://optimism-sepolia.infura.io/v3/${INFURA_API_KEY}`,
+      accounts: [DEPLOYER_PRIVATE_KEY],
+      gasPrice: 1000000000,
+      gas: 8000000,
+      chainId: 11155420,
     },
   },
-  // configuration for harhdat-verify plugin
+  
+  // Contract verification
   etherscan: {
     apiKey: {
-      polygonAmoy: etherscanApiKey,
+      polygon: POLYGONSCAN_API_KEY,
+      polygonAmoy: POLYGONSCAN_API_KEY,
+      polygonMumbai: POLYGONSCAN_API_KEY,
+      mainnet: ETHERSCAN_API_KEY,
+      sepolia: ETHERSCAN_API_KEY,
+      goerli: ETHERSCAN_API_KEY,
+      arbitrumOne: ETHERSCAN_API_KEY,
+      optimisticEthereum: ETHERSCAN_API_KEY,
     },
     customChains: [
       {
@@ -162,14 +183,75 @@ const config: HardhatUserConfig = {
       },
     ],
   },
-  // configuration for etherscan-verify from hardhat-deploy plugin
-  verify: {
-    etherscan: {
-      apiKey: etherscanApiKey,
-    },
+  
+  // Gas reporting
+  gasReporter: {
+    enabled: process.env.REPORT_GAS === "true",
+    currency: "USD",
+    gasPrice: 30,
+    token: "MATIC",
+    coinmarketcap: process.env.COINMARKETCAP_API_KEY,
+    gasPriceApi: "https://api.polygonscan.com/api?module=proxy&action=eth_gasPrice",
+    showTimeSpent: true,
+    showMethodSig: true,
+    maxMethodDiff: 10,
   },
-  sourcify: {
-    enabled: false,
+  
+  // TypeChain configuration
+  typechain: {
+    outDir: "types",
+    target: "ethers-v6",
+    alwaysGenerateOverloads: false,
+    externalArtifacts: ["externalArtifacts/*.json"],
+    dontOverrideCompile: false,
+  },
+  
+  // Contract size limits
+  contractSizer: {
+    alphaSort: true,
+    disambiguatePaths: false,
+    runOnCompile: true,
+    strict: true,
+  },
+  
+  // Deployment paths
+  paths: {
+    sources: "./contracts",
+    tests: "./test",
+    cache: "./cache",
+    artifacts: "./artifacts",
+    deploy: "./deploy",
+    deployments: "./deployments",
+  },
+  
+  // External deployments
+  external: process.env.HARDHAT_FORK
+    ? {
+        deployments: {
+          hardhat: ["deployments/" + process.env.HARDHAT_FORK],
+        },
+      }
+    : undefined,
+    
+  // Deployment configuration
+  deterministicDeployment: (network: string) => {
+    // Skip deterministic deployment for local networks
+    if (network === "hardhat" || network === "localhost") {
+      return undefined;
+    }
+    return {
+      factory: "0x4e59b44847b379578588920ca78fbf26c0b4956c",
+      deployer: "0x3fab184622dc19b6109349b94811493bf2a45362",
+      funding: "0x0000000000000000000000000000000000000000",
+      signedTx: "0x00",
+    };
+  },
+  
+  // Mocha test configuration
+  mocha: {
+    timeout: 120000,
+    reporter: "spec",
+    recursive: true,
   },
 };
 
