@@ -1,49 +1,45 @@
 {
-  "name": "se-2",
-  "version": "0.0.1",
+  "name": "eventchain",
+  "version": "1.0.0",
+  "description": "Next-generation Web3 event management platform with zero-knowledge privacy",
   "private": true,
+  "author": "EventChain Team",
+  "license": "MIT",
+  "keywords": ["web3", "events", "blockchain", "zero-knowledge", "privacy", "nft", "tickets"],
   "workspaces": {
     "packages": [
       "packages/*"
     ]
   },
   "scripts": {
-    "account": "yarn workspace @se-2/hardhat account",
-    "chain": "yarn workspace @se-2/hardhat chain",
-    "compile": "yarn workspace @se-2/hardhat compile",
-    "deploy": "yarn workspace @se-2/hardhat deploy",
-    "flatten": "yarn workspace @se-2/hardhat flatten",
-    "fork": "yarn workspace @se-2/hardhat fork",
-    "format": "yarn next:format && yarn hardhat:format",
-    "generate": "yarn workspace @se-2/hardhat generate",
-    "hardhat-verify": "yarn workspace @se-2/hardhat hardhat-verify",
-    "hardhat:format": "yarn workspace @se-2/hardhat format",
-    "hardhat:lint": "yarn workspace @se-2/hardhat lint",
-    "hardhat:lint-staged": "yarn workspace @se-2/hardhat lint-staged",
-    "hardhat:test": "yarn workspace @se-2/hardhat test",
-    "postinstall": "husky install",
-    "next:build": "yarn workspace @se-2/nextjs build",
-    "next:check-types": "yarn workspace @se-2/nextjs check-types",
-    "next:format": "yarn workspace @se-2/nextjs format",
-    "next:lint": "yarn workspace @se-2/nextjs lint",
-    "next:serve": "yarn workspace @se-2/nextjs serve",
-    "precommit": "lint-staged",
-    "start": "yarn workspace @se-2/nextjs dev",
-    "test": "yarn hardhat:test",
-    "vercel": "yarn workspace @se-2/nextjs vercel",
-    "vercel:yolo": "yarn workspace @se-2/nextjs vercel:yolo",
-    "verify": "yarn workspace @se-2/hardhat verify",
-    "lint": "next lint",
-    "lint:skip": "exit 0"
+    "dev": "yarn workspace @eventchain/client dev",
+    "build": "yarn workspace @eventchain/client build",
+    "start": "yarn workspace @eventchain/client start",
+    "chain": "yarn workspace @eventchain/contracts chain",
+    "compile": "yarn workspace @eventchain/contracts compile",
+    "deploy": "yarn workspace @eventchain/contracts deploy",
+    "deploy:local": "yarn workspace @eventchain/contracts deploy --network localhost",
+    "deploy:testnet": "yarn workspace @eventchain/contracts deploy --network polygonAmoy",
+    "test": "yarn workspace @eventchain/contracts test",
+    "verify": "yarn workspace @eventchain/contracts verify",
+    "format": "yarn workspace @eventchain/client format && yarn workspace @eventchain/contracts format",
+    "lint": "yarn workspace @eventchain/client lint && yarn workspace @eventchain/contracts lint",
+    "typecheck": "yarn workspace @eventchain/client check-types",
+    "clean": "yarn workspace @eventchain/client clean && yarn workspace @eventchain/contracts clean",
+    "postinstall": "husky install"
   },
   "devDependencies": {
-    "@types/snarkjs": "^0",
-    "husky": "~8.0.3",
-    "lint-staged": "~13.2.2"
+    "@types/snarkjs": "^0.7.0",
+    "husky": "^8.0.3",
+    "lint-staged": "^15.2.0",
+    "prettier": "^3.1.0",
+    "typescript": "^5.3.0"
   },
-  "packageManager": "yarn@3.2.3",
+  "packageManager": "yarn@4.0.0",
   "engines": {
-    "node": ">=18.18.0"
+    "node": ">=20.0.0",
+    "npm": ">=10.0.0",
+    "yarn": ">=4.0.0"
   },
   "dependencies": {
     "html5-qrcode": "^2.3.8",
@@ -51,9 +47,13 @@
     "qrcode.react": "^4.1.0",
     "snarkjs": "^0.7.5"
   },
-  "husky": {
-    "hooks": {
-      "pre-commit": "npm run lint:skip"
-    }
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx}": [
+      "prettier --write",
+      "eslint --fix"
+    ],
+    "*.{json,md,yml,yaml}": [
+      "prettier --write"
+    ]
   }
 }

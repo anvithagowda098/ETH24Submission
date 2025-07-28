@@ -1,153 +1,274 @@
-## Highlights
-<p align="center">
-<img src="https://github.com/user-attachments/assets/be6e0a31-c725-412a-8328-33784c344879">
- <p align ="center">Introduction</p>
-</p>
-<br><br>
-<p align="center">
-<img src="https://github.com/user-attachments/assets/c2a29950-8d62-49b9-8845-0309c6917b48">
-   <p align ="center">Internal Working</p>
-</p>
+# EventChain 🎫⛓️
 
-#### Explanation
-https://github.com/user-attachments/assets/736f3aa2-aafb-4b32-b929-c421368aece4
+**Next-generation Web3 event management platform with zero-knowledge privacy**
 
-## Overview
+EventChain revolutionizes event ticketing by combining blockchain technology with zero-knowledge proofs, creating a secure, transparent, and fraud-resistant ecosystem for organizers and attendees.
 
-<p align="center">
-  <img src="https://github.com/user-attachments/assets/aa342c7e-8ca2-4d95-a2f1-598c32d79cad" alt="Sublime's custom image"/>
-</p>
+## ✨ Features
 
-ZKonnect is a blockchain-based event management and ticketing platform that leverages decentralized technologies to enhance transparency, security, and fairness in ticketing systems. Designed for organizers and attendees, ZKonnect eliminates ticket fraud, prevents black-market reselling, and enables seamless event management with role-based access control.
+### 🎪 For Event Organizers
+- **Decentralized Event Creation** - Create events on-chain with immutable records
+- **Smart Contract Automation** - Automated ticket sales and revenue distribution
+- **Real-time Analytics** - Track sales and attendee engagement
+- **Flexible Pricing** - Dynamic pricing models with cryptocurrency payments
+- **Anti-fraud Protection** - Built-in mechanisms to prevent ticket counterfeiting
 
-### **Features**
+### 🎟️ For Attendees
+- **Privacy-First Design** - Zero-knowledge proofs protect personal information
+- **NFT Tickets** - Unique, non-transferable digital tickets as NFTs
+- **Seamless Experience** - One-click purchasing with Web3 wallets
+- **QR Code Verification** - Instant entry validation at events
+- **Automatic Refunds** - Smart contract-based refund system for cancelled events
 
-#### For Organizers:
-![image](https://github.com/user-attachments/assets/81ad9f8c-a959-419e-acb1-11b5bc5db70d)
+### 🔒 Security & Privacy
+- **Zero-Knowledge Proofs** - Prove ticket ownership without revealing identity
+- **Non-transferable NFTs** - Prevents scalping and black market sales
+- **Hash-based Privacy** - Personal data never stored on-chain
+- **Reentrancy Protection** - Secure smart contracts with comprehensive safety checks
 
-- **Event Creation**: Organizers can create events by specifying details like event name, image, maximum attendees, and a secret staking ID.
-- **Editable Event Details**: Organizers can modify event details as needed, stored securely on-chain or via decentralized storage.
-- **Secure Ticket Validation**: Attendees are validated on the day of the event using Zero-Knowledge Proofs (zkProofs).
+## 🏗️ Architecture
 
-#### For Buyers:
-![Screencast from 2024-12-12 15-19-29](https://github.com/user-attachments/assets/0025a082-6017-40e4-bb28-d0cf28ab082f)
+```
+EventChain/
+├── packages/
+│   ├── client/          # Next.js Frontend (TypeScript + React)
+│   └── contracts/       # Smart Contracts (Solidity + Hardhat)
+├── docs/               # Documentation
+└── scripts/            # Deployment and utility scripts
+```
 
-- **Role-Based Access Control**: Buyers and organizers have separate views, authenticated using MetaMask/Coinbase wallet addresses.
-- **Seamless Ticket Purchase**: Buyers stake a secret ID, verify using zkProofs, and pay via cryptocurrency.
-- **NFT Ticketing**: After purchasing, buyers receive a minted NFT containing event details and a zkProof-generated hash as a secure ticket.
+### Tech Stack
+
+**Frontend**
+- Next.js 15 with App Router
+- TypeScript for type safety
+- TailwindCSS + DaisyUI for modern UI
+- Wagmi + RainbowKit for Web3 integration
+- React Query for data management
+- Framer Motion for animations
+
+**Blockchain**
+- Solidity ^0.8.20 smart contracts
+- Hardhat development environment
+- OpenZeppelin security libraries
+- Groth16 zk-SNARKs for privacy
+- Polygon network for low-cost transactions
+
+**Privacy & Security**
+- SnarkJS for zero-knowledge proof generation
+- SHA256 hashing for identity protection
+- ERC-721 non-transferable NFTs
+- Comprehensive input validation
+
+## 🚀 Quick Start
+
+### Prerequisites
+
+Ensure you have the following installed:
+- Node.js v20+ 
+- Yarn v4+
+- Git
+
+### Installation
+
+1. **Clone the repository**
+```bash
+git clone https://github.com/your-username/eventchain.git
+cd eventchain
+```
+
+2. **Install dependencies**
+```bash
+yarn install
+```
+
+3. **Set up environment variables**
+```bash
+# Copy environment templates
+cp packages/client/.env.example packages/client/.env.local
+cp packages/contracts/.env.example packages/contracts/.env
+
+# Edit the files with your configuration
+```
+
+4. **Start local blockchain**
+```bash
+yarn chain
+```
+
+5. **Deploy contracts (new terminal)**
+```bash
+yarn deploy:local
+```
+
+6. **Start the frontend (new terminal)**
+```bash
+yarn dev
+```
+
+7. **Open your browser**
+Visit `http://localhost:3000` and connect your Web3 wallet!
+
+## 🌐 Deployment
+
+### Testnet Deployment (Polygon Amoy)
+
+1. **Configure your wallet**
+   - Add Polygon Amoy testnet to your wallet
+   - Get test MATIC from [Polygon Faucet](https://faucet.polygon.technology/)
+
+2. **Deploy to testnet**
+```bash
+yarn deploy:testnet
+```
+
+3. **Verify contracts**
+```bash
+yarn verify
+```
+
+### Production Deployment
+
+1. **Build the application**
+```bash
+yarn build
+```
+
+2. **Deploy to Vercel/Netlify**
+```bash
+# Vercel
+yarn workspace @eventchain/client vercel
+
+# Or build for static hosting
+yarn workspace @eventchain/client export
+```
+
+## 🎯 Usage Guide
+
+### Creating an Event
+
+1. **Connect Wallet** - Use MetaMask or any Web3 wallet
+2. **Navigate** to "Create Event"
+3. **Fill Details** - Event info, date, location, pricing
+4. **Deploy** - Sign transaction to create on-chain event
+5. **Share** - Get your unique event link
+
+### Purchasing Tickets
+
+1. **Browse Events** - View all available events
+2. **Select Event** - Choose your desired event
+3. **Enter Details** - Provide identity information (hashed for privacy)
+4. **Pay** - Complete purchase with cryptocurrency
+5. **Receive NFT** - Get your unique ticket NFT
+
+### Event Entry
+
+1. **Generate QR** - Create entry QR code from your ticket
+2. **Scan at Venue** - Organizer scans for instant verification
+3. **Zero-Knowledge Proof** - Prove ownership without revealing identity
+4. **Enter Event** - Enjoy your event!
+
+## 🔧 Development
+
+### Project Structure
+
+```
+packages/
+├── client/                 # Frontend Application
+│   ├── app/               # Next.js App Router pages
+│   ├── components/        # Reusable React components
+│   ├── hooks/            # Custom React hooks
+│   ├── lib/              # Utility libraries
+│   └── types/            # TypeScript type definitions
+│
+└── contracts/             # Smart Contracts
+    ├── contracts/         # Solidity contracts
+    ├── deploy/           # Deployment scripts
+    ├── test/             # Contract tests
+    └── types/            # Generated contract types
+```
+
+### Available Scripts
+
+```bash
+# Development
+yarn dev              # Start development server
+yarn chain            # Start local blockchain
+yarn compile          # Compile smart contracts
+yarn test             # Run contract tests
+
+# Deployment
+yarn deploy:local     # Deploy to local network
+yarn deploy:testnet   # Deploy to Polygon Amoy
+yarn build            # Build for production
+
+# Code Quality
+yarn lint             # Lint all packages
+yarn format           # Format code
+yarn typecheck        # Type checking
+```
+
+### Adding New Features
+
+1. **Smart Contracts** - Add new contracts in `packages/contracts/contracts/`
+2. **Frontend Components** - Create components in `packages/client/components/`
+3. **Pages** - Add new routes in `packages/client/app/`
+4. **Tests** - Write tests in respective `test/` directories
+
+## 🧪 Testing
+
+### Smart Contract Tests
+```bash
+yarn test
+```
+
+### Frontend Testing
+```bash
+yarn workspace @eventchain/client test
+```
+
+### Integration Tests
+```bash
+yarn test:integration
+```
+
+## 📚 Documentation
+
+- [Smart Contract API](./docs/contracts.md)
+- [Frontend Components](./docs/components.md)
+- [Zero-Knowledge Proofs](./docs/zk-proofs.md)
+- [Security Considerations](./docs/security.md)
+- [Deployment Guide](./docs/deployment.md)
+
+## 🤝 Contributing
+
+We welcome contributions! Please see our [Contributing Guide](./CONTRIBUTING.md) for details.
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](./LICENSE) file for details.
+
+## 🙏 Acknowledgments
+
+- [Scaffold-ETH 2](https://scaffoldeth.io/) for the amazing development framework
+- [OpenZeppelin](https://openzeppelin.com/) for secure smart contract libraries
+- [SnarkJS](https://github.com/iden3/snarkjs) for zero-knowledge proof implementation
+- [Polygon](https://polygon.technology/) for the scalable blockchain infrastructure
+
+## 🔗 Links
+
+- **Website**: [https://eventchain.xyz](https://eventchain.xyz)
+- **Documentation**: [https://docs.eventchain.xyz](https://docs.eventchain.xyz)
+- **GitHub**: [https://github.com/eventchain/eventchain](https://github.com/eventchain/eventchain)
+- **Discord**: [https://discord.gg/eventchain](https://discord.gg/eventchain)
+- **Twitter**: [@EventChainXYZ](https://twitter.com/EventChainXYZ)
 
 ---
 
-## **Setup Instructions**
-
-### **Prerequisites**
-- Node.js (v16 or higher)
-- Yarn or npm
-- Hardhat (for smart contract deployment)
-- MetaMask wallet extension
-- Polygon zkEVM/Amoy testnet configuration
-
-### **1. Clone the Repository**
-```bash
-git clone https://github.com/your-username/ETH24Submission.git
-cd ETH24Submission
-```
-
-### **2. Install Dependencies**
-#### For Scaffold-ETH2 Setup
-- Install required tools:
-  ```bash
-  yarn install
-  ```
-
-### **3. Smart Contract Deployment**
-#### Scaffold-ETH2
-1. Run a local Ethereum network in the first terminal:
-   ```bash
-   yarn chain
-   ```
-
-2. Deploy the test contract on a second terminal:
-   ```bash
-   yarn deploy
-   ```
-
-#### ZKonnect
-1. Navigate to the backend directory:
-   ```bash
-   cd packages/hardhat
-   ```
-2. Configure the deployment network in `hardhat.config.js` (e.g., Polygon zkEVM/Amoy testnet or local network).
-3. Compile the contracts:
-   ```bash
-   npx hardhat compile
-   ```
-4. Deploy the smart contracts:
-   ```bash
-   npx hardhat deploy --network polygonZkEvm
-   ```
-5. Copy the deployed contract address and update the frontend configuration file (`frontend/src/config.js`).
-
-### **4. Run the Backend**
-Start the backend server:
-```bash
-npm start
-```
-
-### **5. Run the Frontend**
-#### Scaffold-ETH2
-Start the Next.js app:
-```bash
-yarn start
-```
-Visit the app at `http://localhost:3000`.
-
-#### ZKonnect
-1. Navigate to the frontend directory:
-   ```bash
-   cd ../nextjs
-   ```
-2. Start the development server:
-   ```bash
-   yarn start
-   ```
-3. Open the app in your browser at `http://localhost:3000`.
-
----
-
-### **Implementation**
-
-#### **Organizer Workflow**:
-1. Login with MetaMask or Coinbase Wallet.
-2. Create an event by filling in event details and uploading images.
-3. Manage and edit event details stored securely on Polygon zkEVM.
-
-#### **Buyer Workflow**:
-1. Login with MetaMask or Coinbase Wallet.
-2. Browse events and select an event.
-3. Enter the secret staking ID and pay using cryptocurrency.
-4. Receive an NFT ticket as proof of purchase. Wait for the event :)
-
-### **Event Verification**:
-- On the event day, buyers provide their zkProof-generated hash, which the organizer verifies to grant entry, and all of this is automated via QR codes.
-[![Deep Dive into out architecture](https://img.youtube.com/vi/VIDEO_ID/0.jpg)](https://www.youtube.com/watch?v=fGA3MQ0U6fA)
----
-
-### **Technologies Used**
-
-#### **Blockchain and smart contracts**:
-![image](https://github.com/user-attachments/assets/d96ba7fd-a3f6-4212-9651-c2ab6193a74f)
-![image](https://github.com/user-attachments/assets/4347563b-beb3-4aa5-b541-2ab4d3653765)
-![image](https://github.com/user-attachments/assets/173af87d-86cd-4db2-bf2c-d611f52fa9b0)
-
-#### **Authentication**:
-![image](https://github.com/user-attachments/assets/32ce03ce-47ff-43c1-b576-808a5abefbbb)
-![image](https://github.com/user-attachments/assets/3968f01d-a999-41b9-b477-d571f6576422)
-
-
-#### **Proof Generation**:
-- **Circom and Snark.js**: For generating and validating zkProofs to secure sensitive data.
-
-### **Frontend**:
-- **Next.js**: For a modern, responsive, and performant frontend.
-- **Scaffold-ETH2**: For integrating Ethereum and bootstrapping frontend components.
+**Built with ❤️ by the EventChain team**
